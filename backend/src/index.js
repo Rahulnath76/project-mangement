@@ -1,20 +1,29 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import connectDB from './lib/connectDb';
+import connectDB from './lib/connectDb.js';
+import authRoute from './routes/auth.route.js';
+import taskRouter from './routes/task.route.js';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
+const app = express();
 
 dotenv.config();
-const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+}));
+
+
+
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use("/api/auth", authRoute);
+app.use("/api/task", taskRouter); 
 
-// Basic route
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-// Start the server
 app.listen(PORT, async () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     connectDB();
