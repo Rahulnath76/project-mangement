@@ -13,6 +13,7 @@ const generateToken = (userId, res) => {
     secure: process.env.NODE_ENV !== "development",
     maxAge: 15*24*60*60*1000,
   })
+
   return token;
 };
 
@@ -82,7 +83,13 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV !== "development",
+    });
+
+
     return res.status(200).json({ success: true, message: "Logout successful" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
