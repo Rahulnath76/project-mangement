@@ -19,13 +19,15 @@ const userSchema = new mongoose.Schema(
             required: true,
             minlength: 6,
         },
+        projects: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Project"
+            }
+        ],
         isAdmin: {
             type: Boolean,
             default: false,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
         },
     },
     {

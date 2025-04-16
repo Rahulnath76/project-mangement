@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import connectDB from './lib/connectDb.js';
+import connectToDatabase from './lib/connectDb.js';
 import authRoute from './routes/auth.route.js';
+import projectRouter from "./routes/project.route.js"
 import taskRouter from './routes/task.route.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -22,9 +23,10 @@ app.use(cors({
 const PORT = process.env.PORT || 3000;
 
 app.use("/api/auth", authRoute);
+app.use("/api/project", projectRouter);
 app.use("/api/task", taskRouter); 
 
 app.listen(PORT, async () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    connectDB();
+    connectToDatabase();
 });

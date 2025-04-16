@@ -2,9 +2,35 @@
 
 @import "tailwindcss";
 
-
 @theme{
     --font-inter: 'Inter', sans-serif;
     --font-winky: 'Winky Rough', cursive;
     --color-primary: #132028;
+    --color-secondary: #328E6E;
+    --color-tertiary: #5F99AE;
+}
+
+@layer utilities{
+    .scrollbar-thin{
+        scrollbar-width: thin;
+    }
+
+    .scrollbar-thumb-rounded{
+        scrollbar-color: #204156 transparent;
+    }
+
+    .scrollbar::-webkit-scrollbar{
+        width: 8px;
+        height: 8px;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb{
+        background-color: #fff;
+        border-radius: 9999px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track{
+        background: transparent;
+    }
+
 }
