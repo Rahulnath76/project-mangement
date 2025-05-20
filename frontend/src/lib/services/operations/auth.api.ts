@@ -1,10 +1,15 @@
 import { apiConnector } from "../apiConnector";
 import { auth } from "../api";
-import { setLoading, setToken } from "../../../store/slices/authSlice";
-import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import {
+  setAuthError,
+  setLoading,
+  setLoggedin,
+} from "../../../store/slices/authSlice";
+import { Dispatch } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
-import { setUser } from "../../../store/slices/profileSlice";
 import { AppDispatch } from "../../../store/store";
+import { setUserData } from "../../../store/slices/profileSlice";
+import { setError, setSuccess } from "../../../store/slices/projectSlice";
 
 const { SIGNUP_API, LOGIN_API, LOGOUT_API } = auth;
 
@@ -12,19 +17,25 @@ interface IUser {
   name?: string;
   email: string;
   password: string;
+  confirmpassword?: string;
 }
 
-export const signup = ({ name, email, password }: IUser) => {
-  return async (dispatch) => {
+export const signup = ({ name, email, password, confirmpassword }: IUser) => {
+  return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
       const response = await apiConnector("POST", SIGNUP_API, {
         name,
         email,
         password,
+        confirmpassword,
       });
       console.log(response);
+      const data = response.data;
+      console.log("POST PROJECT RESPONSE", data);
+      if (!data.success) throw new Error(data.message);
     } catch (error) {
+      setAuthError(error.message || "Something went wrong");
       console.log(error);
     } finally {
       dispatch(setLoading(false));
@@ -32,7 +43,7 @@ export const signup = ({ name, email, password }: IUser) => {
   };
 };
 
-export const login = ({ email, password }: IUser) => {
+export const login = ({ email, password }: IUser, navigate) => {
   return async (dispatch: Dispatch) => {
     dispatch(setLoading(true));
     try {
@@ -45,18 +56,39 @@ export const login = ({ email, password }: IUser) => {
         }
       );
       console.log(response);
+      if (!response.data.success) throw new Error(response.data.message);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      dispatch(setLoggedin(true));
+      dispatch(setSuccess(true));
+      dispatch(setUserData({ user: { ...response.data.user } }));
 
-      dispatch(setToken(response.data.token));
-      dispatch(setUser({ ...response.data.user }));
-      localStorage.setItem("token", JSON.stringify(response.data.token));
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("isLoggedin", "true");
+      navigate("/");
     } catch (error) {
       console.log("LOGIN API ERROR............", error);
+      // dispatch(setError(error));
     }
     dispatch(setLoading(false));
+  };
+};
+
+export const logout = () => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response: AxiosResponse<unknown, any> = await apiConnector(
+        "POST",
+        LOGOUT_API
+      );
+      console.log(response);
+      if (!response.data.success) throw new Error(response.data.message);
+
+      dispatch(setLoggedin(false));
+
+      localStorage.removeItem("user");
+      localStorage.removeItem("isLoggedin");
+    } catch (error) {
+      console.log(error);
+    }
   };
 };

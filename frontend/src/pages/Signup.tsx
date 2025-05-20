@@ -1,20 +1,21 @@
 import { useState } from "react";
-import Button from "../components/common/Button";
-import { signup } from "../lib/services/operations/auth.api";
 import { useDispatch } from "react-redux";
+import { signupData } from "../data/data";
+import { signup } from "../lib/services/operations/auth.api";
 import { AppDispatch } from "../store/store";
+import AuthForm from "../components/auth/AuthForm.";
 
 const Signup = () => {
+  const [passwordError, setPasswordError] = useState("");
+
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmpassword: "",
   });
-
+   
   const dispatch: AppDispatch = useDispatch();
-
-  const { name, email, password } = data;
-
   const handleOnChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const { name, value } = e.target;
     setData((prevData) => ({
@@ -23,51 +24,48 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(signup(data));
+    if (data.password !== data.confirmpassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
     console.log(data);
+    dispatch(signup(data));
+    
+
+    setData({
+      name: "",
+      email: "",
+      password: "",
+      confirmpassword: "",
+    });
   };
+
   return (
-    <form className="" onSubmit={handleSubmit}>
-      <div>
-        <label>Full name: </label>
-        <input
-          type="text"
-          name="name"
-          value={name}
-          onChange={handleOnChange}
-          className="border"
-          required
+    <div className="flex flex-col items-center justify-center h-screen w-full">
+      <div className="w-full max-w-md p-4 bg-white rounded shadow-md">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-bold">Create an Account</h2>
+          <p className="text-sm text-gray-600">
+            Please fill in the details below to create an account.
+          </p>
+        </div>
+
+        <AuthForm
+          handleSubmit={handleSubmit}
+          data={data}
+          fields={signupData}
+          handleOnChange={handleOnChange}
+          formType={"Sign up"}
+          passwordError={passwordError}
         />
       </div>
 
-      <div>
-        <label>Email: </label>
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={handleOnChange}
-          className="border"
-          required
-        />
+      <div className="flex flex-col items-center justify-center mt-4">
+        <img src="" alt="" />
       </div>
-
-      <div>
-        <label>Password: </label>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handleOnChange}
-          className="border"
-          required
-        />
-      </div>
-
-      <Button text="Signin" bg="bg-tertiary" textColor="text-[#fff]" />
-    </form>
+    </div>
   );
 };
 

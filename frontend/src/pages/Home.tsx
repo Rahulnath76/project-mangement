@@ -1,11 +1,11 @@
 import WritingBox from "../components/Home/WritingBox";
-import MainContent from "../components/Home/MainContent";
+import ProjectContainer from "../components/Home/ProjectContainer";
 
 const Home = () => {
   return (
     <>
       <WritingBox />
-      <MainContent />
+      <ProjectContainer />
     </>
 
   );

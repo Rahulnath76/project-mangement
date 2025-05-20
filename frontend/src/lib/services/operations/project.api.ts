@@ -1,35 +1,101 @@
-import { Dispatch } from "@reduxjs/toolkit";
 import { project } from "../api";
 import { apiConnector } from "../apiConnector";
+import {
+  setProjectData,
+  setLoading,
+  setSuccess,
+} from "../../../store/slices/projectSlice";
+import { AppDispatch } from "../../../store/store";
 
-const {CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT, GET_PROJECT, GET_ALL_PROJECTS} = project;
+const {
+  CREATE_PROJECT,
+  UPDATE_PROJECT,
+  DELETE_PROJECT,
+  GET_PROJECT,
+  GET_ALL_PROJECTS,
+} = project;
 
-interface IProject{
-    title: string;
-    description: string;
+
+
+interface IProject {
+  name: string;
+  description: string;
 }
 
-export const createProject = async ({title, description}:IProject, dispatch:Dispatch) => {
+export const postProject = ({ name, description }: IProject) => {
+  return async (dispatch: AppDispatch, getState: () => any) => {
+    dispatch(setLoading(true));
     try {
-        const response = await apiConnector('POST', CREATE_PROJECT, {
-            title, description
-        });
+      const response = await apiConnector("POST", CREATE_PROJECT, {
+        name,
+        description,
+      });
 
-        console.log(response);
+      console.log("POST PROJECT RESPONSE", response);
+      console.log(response)
+      
+      const currentProjectData = getState().project.projectData;
+      dispatch(setProjectData([...currentProjectData, response.data.project]));
+
+      dispatch(setSuccess(true));
     } catch (error) {
-        console.log(error);
+        console.log("111111");
+      console.log(error.message);
+    } finally {
+      dispatch(setLoading(false));
     }
-}
+  };
+};
 
-export const updateProject = async ({title, description}:IProject, dispatch:Dispatch) => {
+export const updateProject = async ({ title, description }: IProject) => {
+  try {
+    const response = await apiConnector("PUT", UPDATE_PROJECT, {
+      title,
+      description,
+    });
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchUserProjects = () => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setLoading(true));
     try {
-        const response = await apiConnector('PUT', UPDATE_PROJECT, {
-            title, description
-        });
+      const response = await apiConnector("GET", GET_ALL_PROJECTS);
 
-        console.log(response);
-    } catch (error) {
-        console.log(error);
+      dispatch(setProjectData(response.data.projects));
+
+      dispatch(setSuccess(true));
+    } catch (error: any) {
+      console.log("Fetch user projects error:", error.message);
+      dispatch(setSuccess(false));
+    } finally {
+      dispatch(setLoading(false));
     }
-}
+  };
+};
 
+export const deleteProject = async (id: string) => {
+  try {
+    const response = await apiConnector("DELETE", DELETE_PROJECT, { id });
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getProjectDetails = async (id: string) => {
+  try {
+    const response = await apiConnector("GET", GET_PROJECT(id));
+
+    console.log(response);
+
+    return response.data.project;
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -8,10 +8,11 @@ const projectSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
+      capitalize: true,
     },
     description: {
       type: String,

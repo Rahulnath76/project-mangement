@@ -10,9 +10,9 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.post("/new-task", createTask);
+router.post("/create-task", createTask);
 router.put("/update-task", updateTask);
 router.delete("/:projectId/delete-task/:taskId", deleteTask);
-router.get("/:projectId/get-all-tasks", getAllTasks);
+router.get("/get-all-tasks", getAllTasks);
 
 export default router;

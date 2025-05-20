@@ -1,11 +1,11 @@
 import Project from '../models/project.model.js';
-
+import User from '../models/user.model.js';
 
 export const createProject = async (req, res) => {
     try {
-        const { title, description } = req.body;
+        const { name, description } = req.body;
 
-        if (!title || !description) {
+        if (!name || !description) {
             return res.status(400).json({ 
                 success: false,
                 message: 'All fields are required' 
@@ -14,12 +14,18 @@ export const createProject = async (req, res) => {
 
         const newProject = new Project({
             user: req.user.userId,
-            title,
+            name,
             description,
         });
 
         const savedProject = await newProject.save();
 
+        await User.findByIdAndUpdate(
+            req.user.userId,
+            { $push: { projects: savedProject._id } },
+            { new: true }
+        );
+        
         return res.status(200).json({
             success: true,
             message: 'Project created successfully',
@@ -39,7 +45,7 @@ export const createProject = async (req, res) => {
 export const updateProject = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { title, description, status } = req.body;
+        const { name, description, status } = req.body;
 
         const project = await Project.findById(req.params.id);
 
@@ -54,7 +60,7 @@ export const updateProject = async (req, res) => {
             });
         }
 
-        if (title !== undefined) project.title = title;
+        if (name !== undefined) project.name = name;
         if (description !== undefined) project.description = description;
         if (status !== undefined) project.status = status;
 

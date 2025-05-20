@@ -1,13 +1,13 @@
 interface ButtonProps {
-  text: string;
+  children: React.ReactNode;
   bg?: string;
   bgShadow?: string;
   textColor?: string;
   px?: string;
-  onclick?: () => void 
+  onclick?: () => void;
 }
 
-const Button = ({ text, bg, bgShadow, textColor, px, onclick }: ButtonProps) => {
+const Button = ({ children, bg, bgShadow, textColor, px, onclick }: ButtonProps) => {
   return (
     <div className="relative group">
       <div
@@ -26,7 +26,7 @@ const Button = ({ text, bg, bgShadow, textColor, px, onclick }: ButtonProps) => 
         } font-bold rounded-lg p-2 mt-4 flex items-center justify-center w-full cursor-pointer ${bgShadow ? `hover:${bgShadow}` : "hover:bg-secondary"} hover:text-[#FFF8F8] hover:translate-1 transition-all duration-300 ease-in-out z-10`}
         onClick={onclick}
       >
-        {text}
+        {children}
       </button>
     </div>
   );

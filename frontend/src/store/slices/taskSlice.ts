@@ -1,18 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface TaskState {
+export interface Task {
+  id: string;
   name: string;
   description: string;
-  writingpad: boolean;
-  success: boolean;
+  completed: boolean;
+}
+
+export interface TaskState {
+  tasks: Task[];
   loading: boolean;
 }
 
 const initialState: TaskState = {
-  name: "",
-  description: "",
-  writingpad: false,
-  success: false,
+  tasks: [],
   loading: false,
 };
 
@@ -20,30 +21,30 @@ const taskSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
-    setTask: (
-      state: TaskState,
-      action: PayloadAction<{ name: string; description: string }>
+    setTasks: (state, action: PayloadAction<Task[]>) => {
+      state.tasks = action.payload;
+    },
+    addTask: (state, action: PayloadAction<Task>) => {
+      state.tasks.push(action.payload);
+    },
+    updateTask: (
+      state,
+      action: PayloadAction<{ id: string; changes: Partial<Task> }>
     ) => {
-      state.name = action.payload.name;
-      state.description = action.payload.description;
+      const index = state.tasks.findIndex((task) => task.id === action.payload.id);
+      if (index !== -1) {
+        state.tasks[index] = { ...state.tasks[index], ...action.payload.changes };
+      }
     },
-    resetTask: (state: TaskState) => {
-      state.name = "";
-      state.description = "";
-      state.writingpad = false;
+    deleteTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
-    toggleWritingPad: (state: TaskState) => {
-      state.writingpad = !state.writingpad;
-    },
-    setLoading: (state: TaskState, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-    setSuccess: (state: TaskState, action: PayloadAction<boolean>) => {
+    setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
   },
 });
 
-export const { setTask, resetTask, toggleWritingPad, setLoading, setSuccess } =
+export const { setTasks, addTask, updateTask, deleteTask, setLoading } =
   taskSlice.actions;
 export default taskSlice.reducer;

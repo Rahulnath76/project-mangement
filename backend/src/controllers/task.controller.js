@@ -155,8 +155,8 @@ export const deleteTask = async (req, res) => {
 
 export const getAllTasks = async (req, res) => {
   try {
-    const projectId = req.params.id;
-    const project = await Project.findOne({ _id: projectId });
+    const projectId = req.query.projectId;
+    const project = await Project.findById(projectId).populate("tasks");
 
     if (!project) {
       return res.status(404).json({
@@ -165,7 +165,7 @@ export const getAllTasks = async (req, res) => {
       });
     }
     
-    if(project._id.toString() !== req.user.userId){
+    if(project.user.toString() !== req.user.userId){
       return res.status(400).json({
         message: "You are not authorized to access this project"
       })
@@ -177,9 +177,10 @@ export const getAllTasks = async (req, res) => {
       tasks: project.tasks,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
-      message: "Error updating task",
+      message: "Error fetching tasks",
       error: error.message,
     });
   }

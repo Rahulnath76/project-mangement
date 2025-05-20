@@ -16,8 +16,9 @@ export const apiConnector = async <T> (
         url,
         data: bodyData || null,
         headers: headers || undefined,
-        params: params || undefined
+        params: params || undefined,
+        withCredentials: true,
     }
 
-    return axiosInstance<T>(config);
+    return axiosInstance.request<T>(config);
 }

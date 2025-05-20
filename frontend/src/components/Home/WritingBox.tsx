@@ -1,35 +1,35 @@
 import bgWriting from "../../assets/bg-writing.jpg";
 import pen from "../../assets/quill-pen.png";
-import { toggleWritingPad } from "../../store/slices/taskSlice";
 import { useDispatch, useSelector } from "react-redux";
-import WritingPanel from "./WritingPanel";
+import { toggleBoard } from "../../store/slices/projectSlice";
+import CreateProject from "./CreateProject";
 
 
 const WritingBox = () => {
-  const writingpad = useSelector((state) => state.task.writingpad);
+  const projectBoard = useSelector((state) => state.project.projectBoard);
   const dispatch = useDispatch();
 
-  const closeModal = () => {
-    dispatch(toggleWritingPad());
-    console.log(writingpad);
+  const toggleModal = () => {
+    dispatch(toggleBoard());
+    console.log(projectBoard);
   };
 
   return (
     <div
       className={`w-full ${
-        writingpad ? "h-full" : "h-auto"
+        projectBoard ? "h-full" : "h-auto"
       } rounded-lg relative`}
     >
-      {writingpad && (
+      {projectBoard && (
         <div
           className="fixed inset-0 left-[260px] bg-transparent z-40"
-          onClick={closeModal}
+          onClick={toggleModal}
         ></div>
       )}
 
       <button
         className="relative w-full h-[150px] rounded-lg overflow-hidden cursor-pointer"
-        onClick={() => dispatch(toggleWritingPad())}
+        onClick={() => dispatch(toggleBoard())}
       >
         <img src={bgWriting} alt="" className="w-full h-[150px] rounded-lg" />
 
@@ -38,7 +38,7 @@ const WritingBox = () => {
         </div>
       </button>
 
-      <WritingPanel className={`${writingpad ? "block" : "hidden"}`} />
+      <CreateProject className={`${projectBoard ? "block" : "hidden"}`} />
     </div>
   );
 };

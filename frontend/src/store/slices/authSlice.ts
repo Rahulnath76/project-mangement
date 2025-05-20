@@ -1,37 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface Auth {
-  isAuthenticated: boolean;
-  user: null | string;
-  token: null | string;
+  isLoggedIn: boolean;
   loading: boolean;
+  error: string;
 }
 
 const initialState: Auth = {
-  isAuthenticated: false,
-  user: null,
-  token: null,
+  isLoggedIn: localStorage.getItem("isLoggedin") === "true" || false,
   loading: false,
+  error: ""
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setLogin: (state, action) => {
-      state.isAuthenticated = true;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.loading = false;
+    setLoggedin: (state, action) => {
+      console.log("setLoggedin reducer called with:", action.payload);
+      state.isLoggedIn = action.payload;
     },
-    logout: (state) => {
-      state.isAuthenticated = false;
-      state.user = null;
-      state.token = null;
-      state.loading = false;
-    },
-    setToken: (state, action) => {
-      state.token = action.payload;
+    setAuthError: (state, action) => {
+      state.error = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -40,5 +30,5 @@ const authSlice = createSlice({
 });
 
 
-export const { login, logout, setLoading, setToken } = authSlice.actions;
+export const { setLoggedin, setLoading, setAuthError } = authSlice.actions;
 export default authSlice.reducer;

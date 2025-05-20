@@ -19,7 +19,21 @@ const generateToken = (userId, res) => {
 
 export const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmpassword } = req.body;
+    
+    if(!name.trim() || !email.trim()){
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required"
+      })
+    }
+
+    if(password !== confirmpassword){
+      return res.status(400).json({
+        success: false,
+        message: "Password do not match",
+      });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -42,8 +56,10 @@ export const signup = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
+      newUser
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -55,28 +71,44 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+  
+    if(!email.trim()){
+      return res.status(400).json({
+        success: false,
+        message: "No email provided"
+      });
+    }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      return res.status(404)
+        .json({ 
+          success: false, 
+          message: "User not found, please signup" 
+        });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ 
+        success: false,
+        message: "Invalid Password" 
+      });
     }
 
     const token = generateToken(user._id, res);
     
-    return res
-      .status(200)
-      .json({ success: true, message: "Login successful", token });
+    return res.status(200).json({ 
+        success: true, 
+        message: "Login successful", 
+        user: user
+      });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
+    res.status(500).json({ 
+        success: false, 
+        message: "Server error", 
+        error: error.message 
+      });
   }
 };
 
