@@ -150,7 +150,7 @@ const TaskList = ({
           className="bg-gray-50 shadow-md px-4 py-2 border-l-4 flex items-center justify-between mb-4 gap-2"
         >
           <div
-            className="flex items-center gap-4 w-full"
+            className="flex items-center gap-4 flex-1"
             onDoubleClick={() => {
               setEditingTaskId(task._id);
               setEditingTaskName(task.name);
