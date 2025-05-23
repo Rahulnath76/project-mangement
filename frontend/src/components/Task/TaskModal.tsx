@@ -18,18 +18,16 @@ const CreateTaskModal = ({
 }: CreateTaskModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async () => {
     if (!title.trim()) return;
     try {
       setLoading(true);
-      dispatch(createTask({ name: title, description, projectId }));
+      dispatch(createTask({ name: title, projectId }));
       onTaskCreated();
       onClose();
       setTitle("");
-      setDescription("");
     } catch (err) {
       console.error(err);
     } finally {
@@ -41,7 +39,8 @@ const CreateTaskModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white w-[90%] max-w-md p-6 rounded-xl shadow-2xl">
+      <div className="absolute z-20 inset-0" onClick={onClose}></div>
+      <div className="bg-white w-[90%] max-w-md p-6 rounded-xl shadow-2xl z-30">
         <h2 className="text-xl font-semibold mb-4">Create New Task</h2>
 
         <input
@@ -52,12 +51,6 @@ const CreateTaskModal = ({
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        <textarea
-          placeholder="Description (optional)"
-          className="w-full border border-gray-300 rounded-lg p-2 h-24 resize-none mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
 
         <div className="flex justify-end gap-3">
           <button

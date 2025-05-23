@@ -8,7 +8,7 @@ import { toggleBoard } from "../../store/slices/projectSlice";
 
 const CreateProject = ({ className }: { className: string }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { success, loading } = useSelector((state) => state.project);
+  const { loading } = useSelector((state) => state.project);
 
   const [data, setData] = useState({
     name: "",

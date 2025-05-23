@@ -12,7 +12,7 @@ router.use(authMiddleware);
 
 router.post("/create-task", createTask);
 router.put("/update-task", updateTask);
-router.delete("/:projectId/delete-task/:taskId", deleteTask);
+router.delete("/:projectId/delete-task", deleteTask);
 router.get("/get-all-tasks", getAllTasks);
 
 export default router;

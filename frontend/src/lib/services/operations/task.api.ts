@@ -1,32 +1,30 @@
 import { apiConnector } from "../apiConnector";
-import { project, task } from "../api";
-import { addTask, setLoading, setTasks } from "../../../store/slices/taskSlice";
+import { task } from "../api";
+import { addTask, setLoading, setTasks, deleteTask, editTask, setSuccess } from "../../../store/slices/taskSlice";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 
 const { CREATE_TASK, UPDATE_TASK, DELETE_TASK, GET_ALL_TASKS } = task;
 
 interface ITask{
-    projectId: string;
-    taskId?: string;
-    name: string;
-    description: string;
-    status?: string;
+    name: string | undefined;
+    status?: string | undefined;
 }
 
-export const createTask = ( {name, description, projectId}:ITask) => {
+export const createTask = ( {name}:ITask, projectId:string) => {
     return async (dispatch:Dispatch<UnknownAction>) => {
         dispatch(setLoading(true));
         try {
             const response = await apiConnector("POST", CREATE_TASK, {
                 name,
-                description,
                 projectId
             });
             console.log(response);
-
+            if(!response.data.success) throw new Error("Error in creating task");
+            dispatch(setSuccess(true));
             dispatch(addTask(response.data.task));
 
         } catch (error) {
+            dispatch(setSuccess(false));
             console.log("error in createTask", error);
         }
         finally {
@@ -35,20 +33,20 @@ export const createTask = ( {name, description, projectId}:ITask) => {
     }
 }
 
-export const updateTask = ({name, description, status}:ITask, projectId:string, taskId:string) => {
+export const updateTask = ({name, status}:ITask, projectId:string, taskId:string) => {
     return async (dispatch:Dispatch<UnknownAction>) => {
         try {
         const response = await apiConnector("PUT", UPDATE_TASK, {
             name,
-            description,
             status,
             projectId,
             taskId
         });
 
         console.log(response);
+        if(!response.data.success) throw new Error("Error in updating task");
 
-        // updateTask({});
+        dispatch(editTask({id: taskId, changes: {name:response.data.task.name, status:response.data.task.status}}));
 
     } catch (error) {
         console.log("error in createTask", error);
@@ -59,9 +57,10 @@ export const updateTask = ({name, description, status}:ITask, projectId:string, 
 export const getAllTasks = (projectId) => {
   return async (dispatch: Dispatch<UnknownAction>) => {
     try {
-        const response = await apiConnector("GET", GET_ALL_TASKS(projectId),);
+        const response = await apiConnector("GET", GET_ALL_TASKS(projectId));
         console.log("TASKS", response);
         if(!response.data.success ) throw new Error("Error in fetching tasks");
+        console.log(response.data.tasks);
         dispatch(setTasks(response.data.tasks));
     } catch (error) {
         console.log(error);
@@ -69,16 +68,18 @@ export const getAllTasks = (projectId) => {
 }
 };
 
-export const updateTaskStatus = async (taskId:string, status:string):Promise<void> => {
-    try {
-        const response = await apiConnector("PUT", UPDATE_TASK, {
-            taskId,
-            status
-        });
+export const deleteTaskThunk = (projectId, taskId) => {
+    return async (dispatch: Dispatch<UnknownAction>) => {
+        try {
+            console.log(taskId);
+            const response = await apiConnector("DELETE", DELETE_TASK(projectId), {taskId});
+            console.log(response);
+            if(!response.data.success) throw new Error("Error in deleting task");
 
-        console.log(response);
-
-    } catch (error) {
-        console.log("error in createTask", error);
+            dispatch(deleteTask(taskId));
+            
+        } catch (error) {
+            console.log("error in createTask", error);
+        }
     }
 }

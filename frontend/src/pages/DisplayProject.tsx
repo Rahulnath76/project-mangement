@@ -1,64 +1,44 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getProjectDetails } from "../lib/services/operations/project.api";
 import { Plus } from "lucide-react";
-import {
-  getAllTasks,
-  updateTaskStatus,
-} from "../lib/services/operations/task.api";
-import CreateTaskModal from "../components/Task/TaskModal";
-import Button from "../components/common/Button";
-import { AppDispatch } from "../store/store";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import Button from "../components/common/Button";
+import TaskList from "../components/project/TaskList";
+import { getProjectDetails } from "../lib/services/operations/project.api";
+import {
+  deleteTaskThunk,
+  getAllTasks,
+} from "../lib/services/operations/task.api";
+import { Project } from "../lib/types/index";
+import { AppDispatch, RootState } from "../store/store";
 
-interface Task {
-  _id: string;
-  title: string;
-  status: "completed" | "inprogress" | "pending";
-}
-
-interface Project {
-  name: string;
-  description: string;
-  createdAt: string;
-  tasks: Task[];
-}
 
 const DisplayProject = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams();
   const [projectDetails, setProjectDetails] = useState<Project | null>(null);
+  const [stateChange, setStateChange] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-
-  const refetchProject = async () => {
-    const details = await getProjectDetails(id as string);
-    setProjectDetails(details);
-  };
+  const [creating, setCreating] = useState(false);
 
   const fetchProjectDetails = async () => {
     if (!id) return;
     setLoading(true);
     const details = await getProjectDetails(id);
     setProjectDetails(details);
-    // console.log(id);
     dispatch(getAllTasks(id));
     setLoading(false);
   };
 
   useEffect(() => {
     fetchProjectDetails();
-  }, [id]);
+  }, [id, stateChange]);
 
-  const { tasks } = useSelector((state) => state.task);
-  console.log(tasks);
+  const { tasks } = useSelector((state: RootState) => state.task);
 
-  const handleStatusChange = async (
-    taskId: string,
-    newStatus: Task["status"]
-  ) => {
-    await updateTaskStatus(taskId, newStatus);
-    fetchProjectDetails();
+  const handleDeleteTask = (taskId: string) => {
+    dispatch(deleteTaskThunk(id, taskId));
+    setStateChange(!stateChange);
   };
 
   if (loading || !projectDetails) {
@@ -83,21 +63,9 @@ const DisplayProject = () => {
       ? Math.round((groupedTasks.completed.length / totalTasks) * 100)
       : 0;
 
-  const statusColors = {
-    completed: "bg-green-100 border-green-400 text-green-800",
-    inprogress: "bg-yellow-100 border-yellow-400 text-yellow-800",
-    pending: "bg-red-100 border-red-400 text-red-800",
-  };
-
-  const statusOptions: Task["status"][] = [
-    "completed",
-    "inprogress",
-    "pending",
-  ];
-
   return (
     <div className="min-h-screen">
-      <div className="bg-[#537D5C] p-6 pb-4 rounded-lg shadow-lg mb-6">
+      <div className="bg-tertiary p-6 pb-4 rounded-lg shadow-lg mb-6">
         <div className="flex justify-between items-center ">
           <div className="w-full">
             <div className="flex justify-between">
@@ -112,7 +80,7 @@ const DisplayProject = () => {
 
               <div>
                 <Button
-                  onclick={() => setShowModal(true)}
+                  onclick={() => setCreating(true)}
                   bg="bg-primary"
                   textColor="text-[#DDF6D2]"
                   bgShadow="bg-[#B2C6D5]"
@@ -128,12 +96,6 @@ const DisplayProject = () => {
           </div>
         </div>
 
-        <CreateTaskModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          projectId={id!}
-          onTaskCreated={refetchProject}
-        />
 
         <div className="flex justify-between gap-8 items-center">
           <div className="flex gap-4 flex-wrap justify-between w-full lg:w-[50%]">
@@ -161,7 +123,7 @@ const DisplayProject = () => {
 
           <div className="mb-6">
             <div className="bg-[#90D1CA] rounded-full h-28 w-28 relative">
-              <div className="bg-[#537D5C] h-20 w-20 absolute rounded-full top-4 left-4"></div>
+              <div className="bg-tertiary h-20 w-20 absolute rounded-full top-4 left-4"></div>
               <p
                 className={`font-semibold text-2xl absolute z-10 cursor-default w-full h-full flex flex-col items-center justify-center text-[#DDEB9D]`}
               >
@@ -187,34 +149,7 @@ const DisplayProject = () => {
           </div>
         </div>
       ) : (
-        <div className="">
-          {
-            tasks.map((task) => (
-              <div
-                key={task._id}
-                className={`bg-white shadow-md  px-4 py-1 border-l-4 flex items-center justify-between mb-4`}
-              >
-                <h3 className="text-lg font-semibold">{task.name}</h3>
-                <p className="text-sm text-gray-600">
-                  Status: {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                </p>
-                <select
-                  value={task.status}
-                  onChange={(e) =>
-                    handleStatusChange(task._id, e.target.value as Task["status"])
-                  }
-                  className="mt-2 p-2 border rounded"
-                >
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))
-          }
-        </div>
+        <TaskList tasks={tasks} handleDeleteTask={handleDeleteTask} projectId={id} creating={creating} setCreating={setCreating}/>
       )}
     </div>
   );

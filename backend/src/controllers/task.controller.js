@@ -3,13 +3,17 @@ import Project from "../models/project.model.js";
 
 export const createTask = async (req, res) => {
   try {
-    const { name, description, projectId } = req.body;
-    if (!name || !description) {
+    const { name, projectId } = req.body;
+    if (!name) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
+    if(!projectId)  return res.status(400).json({
+      success: false,
+      message: "Project ID is required",
+    });
 
     const project = await Project.findOne({ _id: projectId });
 
@@ -26,10 +30,7 @@ export const createTask = async (req, res) => {
       })
     }
 
-    const task = await Task.create({
-      name,
-      description,
-    });
+    const task = await Task.create({name});
 
     if (!task) {
       return res.status(401).json({
@@ -58,8 +59,7 @@ export const createTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
-    const { name, description, status, projectId, taskId } = req.body;
-
+    const { name, status, projectId, taskId } = req.body;
     const project = await Project.findById({ _id: projectId });
 
     if (!project) {
@@ -86,7 +86,6 @@ export const updateTask = async (req, res) => {
     }
 
     if (name !== undefined) task.name = name;
-    if (description !== undefined) task.description = description;
     if (status !== undefined) task.status = status;
 
     const updatedTask = await task.save();
@@ -96,6 +95,7 @@ export const updateTask = async (req, res) => {
       message: "Task updated successfully",
       task: updatedTask,
     });
+    
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -108,7 +108,7 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
   try {
     const projectId = req.params.projectId;
-    const taskId = req.params.taskId;
+    const taskId = req.body.taskId;
 
     const project = await Project.findById({ _id: projectId });
 

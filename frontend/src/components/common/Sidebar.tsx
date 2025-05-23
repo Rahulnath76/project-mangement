@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 import { toggleBoard } from "../../store/slices/projectSlice";
 import Button from "../common/Button";
 import ListElement from "./ListElement";
-import { GripHorizontal, Home, TabletSmartphone, TagsIcon } from "lucide-react";
+import { GripHorizontal, Home, TagsIcon } from "lucide-react";
+import { RootState } from "../../store/store";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.profile);
-  const { projectData } = useSelector((state) => state.project);
+  const { user } = useSelector((state: RootState) => state.profile);
+  const { projectData } = useSelector((state: RootState) => state.project);
   const [collapse, setCollapse] = useState(false);
 
   const handleCollapse = () => {

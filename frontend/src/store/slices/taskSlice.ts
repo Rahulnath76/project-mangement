@@ -1,20 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface Task {
-  id: string;
-  name: string;
-  description: string;
-  completed: boolean;
-}
+import { Task } from "../../lib/types/index";
 
 export interface TaskState {
   tasks: Task[];
   loading: boolean;
+  success?: boolean;
 }
 
 const initialState: TaskState = {
   tasks: [],
   loading: false,
+  success: true,
 };
 
 const taskSlice = createSlice({
@@ -27,11 +23,11 @@ const taskSlice = createSlice({
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks.push(action.payload);
     },
-    updateTask: (
+    editTask: (
       state,
       action: PayloadAction<{ id: string; changes: Partial<Task> }>
     ) => {
-      const index = state.tasks.findIndex((task) => task.id === action.payload.id);
+      const index = state.tasks.findIndex((task) => task._id === action.payload.id);
       if (index !== -1) {
         state.tasks[index] = { ...state.tasks[index], ...action.payload.changes };
       }
@@ -42,9 +38,12 @@ const taskSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
+    setSuccess: (state, action: PayloadAction<boolean>) => {
+      state.success = action.payload;
+    }
   },
 });
 
-export const { setTasks, addTask, updateTask, deleteTask, setLoading } =
+export const { setTasks, addTask, editTask, deleteTask, setLoading, setSuccess } =
   taskSlice.actions;
 export default taskSlice.reducer;

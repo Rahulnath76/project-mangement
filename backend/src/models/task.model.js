@@ -7,16 +7,12 @@ const taskSchema = new mongoose.Schema({
     trim: true,
     capitalize: true,
   },
-  description: {
-    type: String,
-    trim: true,
-  },
   status: {
     type: String,
     enum: ["pending", "inprogress", "completed"],
     default: "pending",
   },
-});
+}, {timestamps: true});
 
 const Task = mongoose.model("Task", taskSchema);
 

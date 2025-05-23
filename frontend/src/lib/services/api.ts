@@ -15,6 +15,6 @@ export const project = {
 export const task = {
   CREATE_TASK: "/task/create-task",
   UPDATE_TASK: "/task/update-task",
-  DELETE_TASK: (projectId: string, taskId: string) =>(`/task/${projectId}/delete-task/:${taskId}`),
+  DELETE_TASK: (projectId: string) =>(`/task/${projectId}/delete-task`),
   GET_ALL_TASKS: (projectId: string) => `/task/get-all-tasks?projectId=${projectId}`,
 };
