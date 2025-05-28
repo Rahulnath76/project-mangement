@@ -4,16 +4,18 @@ const ListElement = ({
   title,
   to,
   collapse,
-  symbol
+  symbol,
+  opened
 }: {
   title: string;
   to: string;
   collapse?: boolean;
   symbol?: React.ReactNode;
+  opened?: boolean;
 }) => {
   return (
     <li>
-      <Link to={to} className="hover:bg-black/50 p-[10px] rounded-lg cursor-pointer text-sm text-gray-400 flex items-center gap-2">
+      <Link to={to} className={`hover:bg-black/50 p-[10px] rounded-lg cursor-pointer text-sm text-gray-400 flex items-center ${collapse && "justify-center" } gap-2 ${opened && "bg-green-200"}`}>
         {symbol}
         <span className={`${collapse ? "hidden" : "block"}`}>{title}</span>
       </Link>

@@ -3,13 +3,13 @@ import { auth } from "../api";
 import {
   setAuthError,
   setLoading,
+  setSuccess,
   setLoggedin,
 } from "../../../store/slices/authSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 import { AppDispatch } from "../../../store/store";
 import { setUserData } from "../../../store/slices/profileSlice";
-import { setError, setSuccess } from "../../../store/slices/projectSlice";
 
 const { SIGNUP_API, LOGIN_API, LOGOUT_API } = auth;
 
@@ -20,7 +20,10 @@ interface IUser {
   confirmpassword?: string;
 }
 
-export const signup = ({ name, email, password, confirmpassword }: IUser) => {
+export const signup = (
+  { name, email, password, confirmpassword }: IUser,
+  navigate
+) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
@@ -31,12 +34,16 @@ export const signup = ({ name, email, password, confirmpassword }: IUser) => {
         confirmpassword,
       });
       console.log(response);
-      const data = response.data;
-      console.log("POST PROJECT RESPONSE", data);
-      if (!data.success) throw new Error(data.message);
+      if (!response.data.success) throw new Error("Signup failed");
+      dispatch(setSuccess(true));
+      navigate("/signin");
     } catch (error) {
-      setAuthError(error.message || "Something went wrong");
       console.log(error);
+      dispatch(
+        setAuthError(error.response.data.message || "Something went wrong")
+      );
+      dispatch(setSuccess(false));
+      console.log(error.response);
     } finally {
       dispatch(setLoading(false));
     }
@@ -67,7 +74,7 @@ export const login = ({ email, password }: IUser, navigate) => {
       navigate("/");
     } catch (error) {
       console.log("LOGIN API ERROR............", error);
-      // dispatch(setError(error));
+      dispatch(setAuthError(error.response.data.message));
     }
     dispatch(setLoading(false));
   };

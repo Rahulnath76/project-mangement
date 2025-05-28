@@ -3,12 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface Auth {
   isLoggedIn: boolean;
   loading: boolean;
+  success: boolean;
   error: string;
 }
 
 const initialState: Auth = {
   isLoggedIn: localStorage.getItem("isLoggedin") === "true" || false,
   loading: false,
+  success: false,
   error: ""
 };
 
@@ -26,9 +28,12 @@ const authSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setSuccess: (state, action) => {
+      state.success = action.payload;
+    }
   },
 });
 
 
-export const { setLoggedin, setLoading, setAuthError } = authSlice.actions;
+export const { setLoggedin, setLoading, setAuthError , setSuccess } = authSlice.actions;
 export default authSlice.reducer;

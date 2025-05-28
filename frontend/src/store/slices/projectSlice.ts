@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Project } from "../../lib/types";
 
 export interface TaskState {
-  projectData: any[];
+  projectData: Project[];
+  currentProject: Project | null;
   projectBoard: boolean;
   success: boolean;
   error?: string;
@@ -10,6 +12,7 @@ export interface TaskState {
 
 const initialState: TaskState = {
   projectData: [],
+  currentProject: null,
   projectBoard: false,
   success: false,
   error: "",
@@ -26,6 +29,9 @@ const taskSlice = createSlice({
     ) => {
       state.projectData = action.payload;
     },
+    setCurrentProject: (state, action) => {
+      state.currentProject = action.payload;
+    },
     toggleBoard: (state) => {
         state.projectBoard = !state.projectBoard;
     },
@@ -41,6 +47,6 @@ const taskSlice = createSlice({
   },
 });
 
-export const { setProjectData, toggleBoard, setLoading, setSuccess, setError } =
+export const { setProjectData, setCurrentProject, toggleBoard, setLoading, setSuccess, setError } =
   taskSlice.actions;
 export default taskSlice.reducer;

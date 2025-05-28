@@ -3,7 +3,7 @@ import AuthForm from "../components/auth/AuthForm.";
 import { loginData } from "../data/data";
 import { login } from "../lib/services/operations/auth.api";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../store/store";
+import { AppDispatch, RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -13,21 +13,19 @@ const Login = () => {
   });
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { success, error } = useSelector((state) => state.project);
-  const [errorMsg, setError] = useState("");
+
+  const { success, error} = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(data);
     dispatch(login(data, navigate));
+
     if (success) {
       setData({
         email: "",
         password: "",
       });
-    }
-    else{
-      setError(error);
     }
   };
 
@@ -40,29 +38,32 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full">
-      <div className="w-full max-w-md p-4 bg-white rounded shadow-md">
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold">Sign in to access your account</h2>
-          <p className="text-sm text-gray-600">
-            Please fill in the details below.
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-primary to-secondary px-4">
+        <div className="w-full max-w-md p-10 py-12 bg-[#FDFAF6] rounded-2xl shadow-2xl sm:max-w-lg">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-extrabold text-gray-800">
+              Welcome Back
+            </h2>
+            <p className="text-sm text-gray-500 mt-2">
+              Sign in to your account to continue
+            </p>
+          </div>
+        
+
+          <AuthForm
+            data={data}
+            fields={loginData}
+            handleSubmit={handleSubmit}
+            handleOnChange={handleOnChange}
+            formType={"Sign in"}
+            error={error}
+          />
         </div>
 
-        <AuthForm
-          data={data}
-          fields={loginData}
-          handleSubmit={handleSubmit}
-          handleOnChange={handleOnChange}
-          formType={"Sign in"}
-          passwordError={errorMsg}
-        />
+        <div className="flex flex-col items-center justify-center mt-4">
+          <img src="" alt="" />
+        </div>
       </div>
-
-      <div className="flex flex-col items-center justify-center mt-4">
-        <img src="" alt="" />
-      </div>
-    </div>
   );
 };
 

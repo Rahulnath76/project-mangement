@@ -1,26 +1,40 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toggleBoard } from "../../store/slices/projectSlice";
 import Button from "../common/Button";
 import ListElement from "./ListElement";
 import { GripHorizontal, Home, TagsIcon } from "lucide-react";
 import { RootState } from "../../store/store";
 
-const Sidebar = () => {
+interface Props{
+  collapse: boolean;
+  setCollapse: (b: boolean) => void;
+}
+
+const Sidebar = ({collapse, setCollapse}: Props) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.profile);
   const { projectData } = useSelector((state: RootState) => state.project);
-  const [collapse, setCollapse] = useState(false);
+
+  const { id } = useParams();
 
   const handleCollapse = () => {
     setCollapse(!collapse);
   }
 
   return (
-    <div
+    collapse ? 
+    ( <button
+          onClick={handleCollapse}
+          className="cursor-pointer bg-primary p-3 m-2 my-3 rounded-xl z-20"
+        >
+          <GripHorizontal className="text-white" />
+        </button>) : 
+    (
+      <div
       className={`fixed top-0 left-0 bottom-0 ${
-        collapse ? "w-[60px]" : "w-[250px]"
+        collapse ? "hidden" : "w-[250px]"
       } transition-all duration-300 ease-in-out bg-primary flex flex-col m-2 rounded-lg`}
     >
       {/* Header */}
@@ -41,8 +55,9 @@ const Sidebar = () => {
       </div>
 
       {/* Main Content (scrollable) */}
-      <div className="flex-1 flex flex-col justify-between overflow-hidden">
-        <div className="px-3 py-2 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar h-full">
+      <div className={`flex-1 flex flex-col justify-between overflow-hidden ${collapse && "hidden"}`}>
+          {/* Primary Links */}
+        <div className={` py-2 ${collapse ? "overflow-hidden px-2" : "overflow-y-auto px-3"} scrollbar-thin scrollbar-thumb-rounded scrollbar h-full`}>
           {/* Primary Links */}
           <ul className="flex flex-col">
             <ListElement title="Home" to="/" collapse={collapse} symbol={<Home width={20} height={20}/>}/>
@@ -69,7 +84,7 @@ const Sidebar = () => {
             </div>
 
             {/* Projects Section */}
-            <div className="flex-1 flex flex-col my-2 px-1">
+            <div className={`flex-1 flex flex-col my-2 ${!collapse && "px-1"}`}>
               <h3 className="text-gray-200/85 font-semibold pb-2">Projects</h3>
               <ul className=" flex-1 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar">
                 {!projectData || projectData.length === 0 ? (
@@ -83,6 +98,7 @@ const Sidebar = () => {
                       title={project.name}
                       to={`/projects/${project._id}`}
                       collapse={collapse}
+                      opened={id === project._id}
                     />
                   ))
                 )}
@@ -125,6 +141,9 @@ const Sidebar = () => {
         </div>
       </div>
     </div>
+    )
+    
+  
   );
 };
 
