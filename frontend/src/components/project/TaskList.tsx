@@ -1,9 +1,9 @@
-import React, { use, useEffect, useRef, useState } from "react";
 import { Trash } from "lucide-react";
-import { createTask, updateTask } from "../../lib/services/operations/task.api";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { createTask, updateTask } from "../../lib/services/operations/task.api";
 import { Task } from "../../lib/types";
+import { AppDispatch, RootState } from "../../store/store";
 
 interface Props {
   tasks: Task[];
@@ -21,7 +21,7 @@ const TaskList = ({
   setCreating,
 }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { success } = useSelector((state) => state.task);
+  const { success } = useSelector((state: RootState) => state.task);
   const inputRef = useRef<HTMLInputElement>(null);
   const [taskname, setTaskName] = useState("");
 
@@ -141,6 +141,12 @@ const TaskList = ({
             placeholder="Enter task name"
             className="w-full px-2 rounded focus:outline-none text-lg font-semibold"
           />
+        </div>
+      )}
+
+      {tasks.length === 0 && !creating && (
+        <div className="text-center text-gray-700 mt-10 text-lg font-semibold">
+          No tasks available.
         </div>
       )}
 

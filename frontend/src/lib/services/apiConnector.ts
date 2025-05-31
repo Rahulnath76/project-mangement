@@ -7,9 +7,9 @@ export const axiosInstance = axios.create({
 export const apiConnector = async <T> (
     method: Method,
     url: string,
-    bodyData?: any,
+    bodyData?: unknown,
     headers?: Record<string, string>,
-    params?: Record<string, any>
+    params?: Record<string, unknown>
 ): Promise<AxiosResponse<T>> => {
     const config: AxiosRequestConfig = {
         method,

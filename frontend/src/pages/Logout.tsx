@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
 import { logout } from "../lib/services/operations/auth.api";
-import { AppDispatch } from "../store/store";
+import { AppDispatch, RootState } from "../store/store";
+import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const {isLoggedIn} = useSelector(state => state.auth);
+    const navigate = useNavigate();
+    const { isLoggedIn } = useSelector((state :RootState) => state.auth);
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logout(navigate));
         if(!isLoggedIn)
           console.log("logout successful")
     }
@@ -17,4 +19,4 @@ const Logout = () => {
   )
 }
 
-export default Logout
+export default Logout;

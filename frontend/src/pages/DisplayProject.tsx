@@ -11,7 +11,7 @@ import {
 } from "../lib/services/operations/task.api";
 import { Project } from "../lib/types/index";
 import { AppDispatch, RootState } from "../store/store";
-
+import dayjs from "dayjs";
 
 const DisplayProject = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -73,14 +73,17 @@ const DisplayProject = () => {
                 <h1 className="text-3xl text-[#DDEB9D] font-bold mb-1">
                   {name}
                 </h1>
-                <p className="text-sm mb-1 text-[#B6B09F]">
-                  Created on: {new Date(createdAt).toLocaleDateString()}
+                <p className="text-sm mb-1 font-semibold text-gray-700">
+                  Created on: {dayjs(createdAt).format("DD MMM YY")}
                 </p>
               </div>
 
               <div>
                 <Button
-                  onclick={() => setCreating(true)}
+                  onclick={() => {
+                    setCreating(true);
+                    console.log(creating);
+                  }}
                   bg="bg-primary"
                   textColor="text-[#DDF6D2]"
                   bgShadow="bg-[#B2C6D5]"
@@ -95,7 +98,6 @@ const DisplayProject = () => {
             </p>
           </div>
         </div>
-
 
         <div className="flex justify-between gap-8 items-center">
           <div className="flex gap-4 flex-wrap justify-between w-full lg:w-[50%]">
@@ -142,15 +144,13 @@ const DisplayProject = () => {
         </div>
       </div>
 
-      {totalTasks === 0 ? (
-        <div className="text-center h-full w-full text-gray-700 mt-10 text-lg font-semibold">
-          <div className="flex w-full h-full items-center justify-center">
-            No tasks available.
-          </div>
-        </div>
-      ) : (
-        <TaskList tasks={tasks} handleDeleteTask={handleDeleteTask} projectId={id} creating={creating} setCreating={setCreating}/>
-      )}
+      <TaskList
+        tasks={tasks}
+        handleDeleteTask={handleDeleteTask}
+        projectId={id ?? ""}
+        creating={creating}
+        setCreating={setCreating}
+      />
     </div>
   );
 };

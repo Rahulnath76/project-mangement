@@ -8,15 +8,14 @@ import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Signup from "./pages/Signup";
 import SignupTest from "./pages/SignupTest";
-import { AppDispatch } from "./store/store";
+import { AppDispatch, RootState } from "./store/store";
 import DisplayProject from "./pages/DisplayProject";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { user } = useSelector((state) => state.profile);
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  console.log(isLoggedIn)
+  const { user } = useSelector((state: RootState) => state.profile);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (user) {
@@ -24,7 +23,7 @@ const App = () => {
     }
   }, [user, dispatch]);
   return (
-    <div className="font-inter w-full h-full min-h-screen text-primary bg-[#ECFAE5]">
+    <div className="font-inter text-primary bg-[#F6F6F6] w-full">
       <Routes>
         <Route
           path="/"

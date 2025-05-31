@@ -1,15 +1,13 @@
 import { apiConnector } from "../apiConnector";
 import { auth } from "../api";
 import {
-  setAuthError,
-  setLoading,
-  setSuccess,
-  setLoggedin,
+  setAuthError, setLoading, setSuccess, setLoggedin,
 } from "../../../store/slices/authSlice";
 import { Dispatch } from "@reduxjs/toolkit";
-import { AxiosResponse } from "axios";
 import { AppDispatch } from "../../../store/store";
 import { setUserData } from "../../../store/slices/profileSlice";
+import { AuthResponse } from "../../types";
+import { NavigateFunction } from "react-router-dom";
 
 const { SIGNUP_API, LOGIN_API, LOGOUT_API } = auth;
 
@@ -22,12 +20,12 @@ interface IUser {
 
 export const signup = (
   { name, email, password, confirmpassword }: IUser,
-  navigate
+  navigate: NavigateFunction
 ) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", SIGNUP_API, {
+      const response = await apiConnector<AuthResponse>("POST", SIGNUP_API, {
         name,
         email,
         password,
@@ -50,11 +48,11 @@ export const signup = (
   };
 };
 
-export const login = ({ email, password }: IUser, navigate) => {
+export const login = ({ email, password }: IUser, navigate: NavigateFunction) => {
   return async (dispatch: Dispatch) => {
     dispatch(setLoading(true));
     try {
-      const response: AxiosResponse<unknown, any> = await apiConnector(
+      const response = await apiConnector<AuthResponse>(
         "POST",
         LOGIN_API,
         {
@@ -80,10 +78,10 @@ export const login = ({ email, password }: IUser, navigate) => {
   };
 };
 
-export const logout = () => {
+export const logout = (navigate: NavigateFunction) => {
   return async (dispatch: Dispatch) => {
     try {
-      const response: AxiosResponse<unknown, any> = await apiConnector(
+      const response = await apiConnector<AuthResponse>(
         "POST",
         LOGOUT_API
       );
@@ -94,6 +92,8 @@ export const logout = () => {
 
       localStorage.removeItem("user");
       localStorage.removeItem("isLoggedin");
+      dispatch(setUserData({ user: null }));
+      navigate("/signin");
     } catch (error) {
       console.log(error);
     }

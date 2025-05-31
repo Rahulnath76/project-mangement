@@ -32,6 +32,9 @@ const taskSlice = createSlice({
     setCurrentProject: (state, action) => {
       state.currentProject = action.payload;
     },
+    updateProjectsInfo: (state, action) => {
+      state.projectData = state.projectData.filter((project) => project._id !== action.payload);
+    },
     toggleBoard: (state) => {
         state.projectBoard = !state.projectBoard;
     },
@@ -47,6 +50,6 @@ const taskSlice = createSlice({
   },
 });
 
-export const { setProjectData, setCurrentProject, toggleBoard, setLoading, setSuccess, setError } =
+export const { setProjectData, setCurrentProject, updateProjectsInfo, toggleBoard, setLoading, setSuccess, setError } =
   taskSlice.actions;
 export default taskSlice.reducer;

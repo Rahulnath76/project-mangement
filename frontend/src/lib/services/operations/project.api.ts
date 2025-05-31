@@ -1,11 +1,13 @@
-import { project } from "../api";
-import { apiConnector } from "../apiConnector";
 import {
-  setProjectData,
   setLoading,
+  setProjectData,
   setSuccess,
+  updateProjectsInfo,
 } from "../../../store/slices/projectSlice";
 import { AppDispatch } from "../../../store/store";
+import { ProjectResponse } from "../../types";
+import { project } from "../api";
+import { apiConnector } from "../apiConnector";
 
 const {
   CREATE_PROJECT,
@@ -14,8 +16,6 @@ const {
   GET_PROJECT,
   GET_ALL_PROJECTS,
 } = project;
-
-
 
 interface IProject {
   name: string;
@@ -32,14 +32,14 @@ export const postProject = ({ name, description }: IProject) => {
       });
 
       console.log("POST PROJECT RESPONSE", response);
-      console.log(response)
-      
+      console.log(response);
+
       const currentProjectData = getState().project.projectData;
       dispatch(setProjectData([...currentProjectData, response.data.project]));
 
       dispatch(setSuccess(true));
     } catch (error) {
-        console.log("111111");
+      console.log("111111");
       console.log(error.message);
     } finally {
       dispatch(setLoading(false));
@@ -78,14 +78,22 @@ export const fetchUserProjects = () => {
   };
 };
 
-export const deleteProject = async (id: string) => {
-  try {
-    const response = await apiConnector("DELETE", DELETE_PROJECT, { id });
+export const deleteProject = (id: string) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const response = await apiConnector<ProjectResponse>(
+        "DELETE",
+        DELETE_PROJECT(id)
+      );
+      console.log(response);
 
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-  }
+      if (!response.data.success) throw new Error("something went wrong");
+      dispatch(updateProjectsInfo(id));
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
 };
 
 export const getProjectDetails = async (id: string) => {
@@ -98,4 +106,4 @@ export const getProjectDetails = async (id: string) => {
   } catch (error) {
     console.log(error);
   }
-}
+};

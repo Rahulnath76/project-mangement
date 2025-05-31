@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { GripHorizontal, Home, TagsIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { toggleBoard } from "../../store/slices/projectSlice";
+import { RootState } from "../../store/store";
 import Button from "../common/Button";
 import ListElement from "./ListElement";
-import { GripHorizontal, Home, TagsIcon } from "lucide-react";
-import { RootState } from "../../store/store";
 
 interface Props{
   collapse: boolean;
@@ -27,23 +26,21 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
     collapse ? 
     ( <button
           onClick={handleCollapse}
-          className="cursor-pointer bg-primary p-3 m-2 my-3 rounded-xl z-20"
+          className="cursor-pointer bg-[#7F8CAA] p-2 rounded-xl z-20 fixed top-6 left-5"
         >
-          <GripHorizontal className="text-white" />
+          <GripHorizontal className="text-white size-5" />
         </button>) : 
     (
       <div
       className={`fixed top-0 left-0 bottom-0 ${
         collapse ? "hidden" : "w-[250px]"
-      } transition-all duration-300 ease-in-out bg-primary flex flex-col m-2 rounded-lg`}
+      } bg-primary flex flex-col m-2 rounded-lg`}
     >
       {/* Header */}
       <div
-        className={`border-b-2 border-gray-800 w-full flex ${
-          collapse ? "justify-center" : "justify-between"
-        } items-center gap-4 p-4 text-white`}
+        className={`border-b-2 border-gray-800 w-full flex justify-between items-center gap-4 p-4 text-white`}
       >
-        <span className={`${collapse ? "hidden" : "block"} text-lg font-bold`}>
+        <span className={`text-lg font-bold`}>
           Task Manager
         </span>
         <button
@@ -54,23 +51,17 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
         </button>
       </div>
 
-      {/* Main Content (scrollable) */}
-      <div className={`flex-1 flex flex-col justify-between overflow-hidden ${collapse && "hidden"}`}>
-          {/* Primary Links */}
-        <div className={` py-2 ${collapse ? "overflow-hidden px-2" : "overflow-y-auto px-3"} scrollbar-thin scrollbar-thumb-rounded scrollbar h-full`}>
-          {/* Primary Links */}
+      <div className={`flex-1 flex flex-col justify-between overflow-hidden`}>
+        <div className={` py-2 px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar h-full`}>
           <ul className="flex flex-col">
             <ListElement title="Home" to="/" collapse={collapse} symbol={<Home width={20} height={20}/>}/>
             <ListElement title="Tasks" to="/" collapse={collapse} symbol={<TagsIcon />}/>
           </ul>
 
           <div className="flex-1 flex flex-col">
-            {/* Menu Section */}
-            <div className="px-1 border-b-2 border-gray-800 pb-4">
+            <div className="px-1 border-b-2 border-gray-800 pb-2">
               <h3
-                className={`text-[12px] text-gray-200/85 pb-2 font-semibold ${
-                  collapse && "text-center"
-                }`}
+                className={`text-[12px] text-gray-200/85 pb-2 font-semibold`}
               >
                 Menu
               </h3>
@@ -84,9 +75,9 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
             </div>
 
             {/* Projects Section */}
-            <div className={`flex-1 flex flex-col my-2 ${!collapse && "px-1"}`}>
+            <div className={`flex-1 flex flex-col my-2`}>
               <h3 className="text-gray-200/85 font-semibold pb-2">Projects</h3>
-              <ul className=" flex-1 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar">
+              <ul className="flex-1 flex flex-col">
                 {!projectData || projectData.length === 0 ? (
                   <div className="text-sm text-gray-400 font-semibold">
                     No Projects found.
@@ -106,7 +97,7 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
               <div className="mt-6">
                 <Button
                   children={
-                    <span>{`${collapse ? "+" : "Create New Project"}`}</span>
+                    <span>Create New Project</span>
                   }
                   onclick={() => dispatch(toggleBoard())}
                 />
@@ -117,9 +108,9 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
 
         {/* Footer Profile Section - Stick to Bottom */}
         <div className="border-t-2 border-gray-800 p-3">
-          <Link to={"/"} className="flex items-center gap-2 w-full">
+          <Link to={"/logout"} className="flex items-center gap-2 w-full">
             <img
-              src=""
+              src={user.profilePic}
               alt="profile"
               width={40}
               height={40}

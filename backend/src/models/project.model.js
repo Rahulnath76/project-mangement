@@ -32,6 +32,10 @@ const projectSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
     },
+    tag: {
+      type: String,
+      trim: true
+    }
   },
   {
     timestamps: true,
