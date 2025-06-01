@@ -1,17 +1,16 @@
-import { apiConnector } from "../apiConnector";
-import { auth } from "../api";
-import {
-  setAuthError,
-  setLoading,
-  setSuccess,
-  setLoggedin,
-} from "../../../store/slices/authSlice";
 import { Dispatch } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../../store/store";
-import { setUserData } from "../../../store/slices/profileSlice";
-import { AuthResponse } from "../../types";
-import { NavigateFunction } from "react-router-dom";
 import toast from "react-hot-toast";
+import { NavigateFunction } from "react-router-dom";
+import {
+  setLoading,
+  setLoggedin,
+  setSuccess,
+} from "../../../store/slices/authSlice";
+import { setUserData } from "../../../store/slices/profileSlice";
+import { AppDispatch } from "../../../store/store";
+import { AuthResponse } from "../../types";
+import { auth } from "../api";
+import { apiConnector } from "../apiConnector";
 
 const { SIGNUP_API, LOGIN_API, LOGOUT_API } = auth;
 
