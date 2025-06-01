@@ -23,15 +23,17 @@ const {
 interface IProject {
   name: string;
   description: string;
+  type: string;
 }
 
-export const postProject = ({ name, description }: IProject) => {
+export const postProject = ({ name, description, type }: IProject) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     try {
       const response = await apiConnector<ProjectResponse>("POST", CREATE_PROJECT, {
         name,
         description,
+        type
       });
 
       console.log("POST PROJECT RESPONSE", response);

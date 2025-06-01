@@ -13,8 +13,9 @@ const CreateProject = ({ className }: { className: string }) => {
   const [data, setData] = useState({
     name: "",
     description: "",
+    type: "",
   });
-  const { name, description } = data;
+  const { name, description, type } = data;
 
   const handleOnChange: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
@@ -33,6 +34,7 @@ const CreateProject = ({ className }: { className: string }) => {
     setData({
       name: "",
       description: "",
+      type: "",
     });
   };
 
@@ -41,6 +43,7 @@ const CreateProject = ({ className }: { className: string }) => {
     setData({
       name: "",
       description: "",
+      type: "",
     });
   };
 
@@ -55,6 +58,18 @@ const CreateProject = ({ className }: { className: string }) => {
         </button>
       </div>
       <div className="flex flex-col gap-4">
+        <div>
+          <p className="pb-1 text-sm text-gray-300 ">Project Type</p>
+          <input
+            type="text"
+            placeholder="Project type"
+            className="w-full placeholder-gray-300/85 bg-[#183B4E] p-2 rounded focus:outline-none"
+            name="type"
+            value={type}
+            onChange={handleOnChange}
+          />
+        </div>
+
         <div>
           <p className="pb-1 text-sm text-gray-300 ">Project name</p>
           <input

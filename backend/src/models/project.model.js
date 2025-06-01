@@ -32,10 +32,10 @@ const projectSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
     },
-    tag: {
+    type: {
       type: String,
-      trim: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -45,7 +45,7 @@ const projectSchema = new mongoose.Schema(
 projectSchema.pre("remove", async function(next) {
   await Task.deleteMany({_id: {$in: this.tasks}});
   next();
-})
+});
 
 const Project = mongoose.model("Project", projectSchema);
 
