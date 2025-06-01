@@ -16,7 +16,6 @@ interface Props {
   }>;
   handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formType: string;
-  error: string;
 }
 
 const AuthForm = ({
@@ -24,8 +23,7 @@ const AuthForm = ({
   data,
   fields,
   handleOnChange,
-  formType,
-  error,
+  formType
 }: Props) => {
   const { loading } = useSelector((state: RootState) => state.auth);
   const [showPasswordMap, setShowPasswordMap] = useState<
@@ -78,7 +76,6 @@ const AuthForm = ({
             )}
           </div>
         ))}
-        {error && <p className="text-red-500 text-sm gap-0 -my-2">{error}</p>}
 
         <button className="bg-secondary py-2 px-4 rounded-xl font-semibold text-white hover:bg-opacity-90 transition duration-300 cursor-pointer">
 

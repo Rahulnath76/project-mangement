@@ -1,15 +1,15 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import AuthForm from "../components/auth/AuthForm.";
 import { signupData } from "../data/data";
 import { signup } from "../lib/services/operations/auth.api";
 import { AppDispatch, RootState } from "../store/store";
-import AuthForm from "../components/auth/AuthForm.";
-import { useNavigate } from "react-router-dom";
-import { setAuthError } from "../store/slices/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { success, error } = useSelector((state: RootState) => state.auth);
+  const { success } = useSelector((state: RootState) => state.auth);
 
   const [data, setData] = useState({
     name: "",
@@ -30,7 +30,7 @@ const Signup = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (data.password !== data.confirmpassword) {
-      dispatch(setAuthError("Passwords do not match"));
+      toast.error("Passwords do not match");
       return;
     }
     console.log(data);
@@ -61,7 +61,6 @@ const Signup = () => {
           fields={signupData}
           handleOnChange={handleOnChange}
           formType={"Sign up"}
-          error={error}
         />
       </div>
     </div>

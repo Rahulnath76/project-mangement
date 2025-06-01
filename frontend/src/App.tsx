@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import SignupTest from "./pages/SignupTest";
 import { AppDispatch, RootState } from "./store/store";
 import DisplayProject from "./pages/DisplayProject";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,6 +53,8 @@ const App = () => {
             <DisplayProject />  
         </WithSidebar>} />
       </Routes>
+
+      <Toaster />
     </div>
   );
 };

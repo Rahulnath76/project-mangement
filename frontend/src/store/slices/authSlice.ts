@@ -4,14 +4,12 @@ export interface Auth {
   isLoggedIn: boolean;
   loading: boolean;
   success: boolean;
-  error: string;
 }
 
 const initialState: Auth = {
   isLoggedIn: localStorage.getItem("isLoggedin") === "true" || false,
   loading: false,
-  success: false,
-  error: ""
+  success: false
 };
 
 const authSlice = createSlice({
@@ -21,9 +19,6 @@ const authSlice = createSlice({
     setLoggedin: (state, action) => {
       console.log("setLoggedin reducer called with:", action.payload);
       state.isLoggedIn = action.payload;
-    },
-    setAuthError: (state, action) => {
-      state.error = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -35,5 +30,5 @@ const authSlice = createSlice({
 });
 
 
-export const { setLoggedin, setLoading, setAuthError , setSuccess } = authSlice.actions;
+export const { setLoggedin, setLoading, setSuccess } = authSlice.actions;
 export default authSlice.reducer;

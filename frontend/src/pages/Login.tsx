@@ -14,7 +14,7 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { success, error} = useSelector((state: RootState) => state.auth);
+  const { success } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,7 +56,6 @@ const Login = () => {
             handleSubmit={handleSubmit}
             handleOnChange={handleOnChange}
             formType={"Sign in"}
-            error={error}
           />
         </div>
 

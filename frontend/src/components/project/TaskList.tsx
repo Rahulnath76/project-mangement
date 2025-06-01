@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -215,6 +215,18 @@ const TaskList = ({ tasks, projectId, creating, setCreating }: Props) => {
               ))}
             </div>
 
+            <button
+              onClick={() => {
+              setEditingTaskId(task._id);
+              setEditingTaskName(task.name);
+              setTimeout(() => {
+                inputRef.current?.focus();
+              }, 0);
+            }}
+              className="cursor-pointer"
+            >
+              <Edit className="h-6 w-6 hover:text-blue-500 transition-all duration-150" />
+            </button>
             <button
               onClick={() => handleDeleteTask(task._id)}
               className="cursor-pointer"
