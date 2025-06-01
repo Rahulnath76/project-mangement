@@ -1,27 +1,23 @@
 import { Trash } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { createTask, updateTask } from "../../lib/services/operations/task.api";
+import { useDispatch } from "react-redux";
+import {
+  createTask,
+  deleteTaskThunk,
+  updateTask,
+} from "../../lib/services/operations/task.api";
 import { Task } from "../../lib/types";
-import { AppDispatch, RootState } from "../../store/store";
+import { AppDispatch } from "../../store/store";
 
 interface Props {
   tasks: Task[];
-  handleDeleteTask: (taskId: string) => void;
   projectId: string;
   creating: boolean;
   setCreating: (v: boolean) => void;
 }
 
-const TaskList = ({
-  tasks,
-  handleDeleteTask,
-  projectId,
-  creating,
-  setCreating,
-}: Props) => {
+const TaskList = ({ tasks, projectId, creating, setCreating }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { success } = useSelector((state: RootState) => state.task);
   const inputRef = useRef<HTMLInputElement>(null);
   const [taskname, setTaskName] = useState("");
 
@@ -81,6 +77,10 @@ const TaskList = ({
         setEditingTaskName("");
       }
     }
+  };
+
+  const handleDeleteTask = (taskId: string) => {
+    dispatch(deleteTaskThunk(projectId, taskId));
   };
 
   const handleOnBlur = (taskId: Task["_id"]) => {
@@ -215,7 +215,10 @@ const TaskList = ({
               ))}
             </div>
 
-            <button onClick={() => handleDeleteTask(task._id)}>
+            <button
+              onClick={() => handleDeleteTask(task._id)}
+              className="cursor-pointer"
+            >
               <Trash className="h-6 w-6 hover:text-red-500 transition-all duration-150" />
             </button>
           </div>

@@ -1,6 +1,6 @@
 import { Pin, Plus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleBoard } from "../../store/slices/projectSlice";
+import { toggleProjectCreationBoard } from "../../store/slices/appSlice";
 import { RootState } from "../../store/store";
 import ProjectList from "../project/ProjectList";
 
@@ -8,7 +8,7 @@ const ProjectContainer = () => {
   const dispatch = useDispatch();
   const { projectData } = useSelector((state: RootState) => state.project);
   const toggleModal = () => {
-    dispatch(toggleBoard());
+    dispatch(toggleProjectCreationBoard());
   };
 
   return (

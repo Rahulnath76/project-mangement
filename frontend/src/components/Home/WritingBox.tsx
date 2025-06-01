@@ -3,24 +3,26 @@ import pen from "../../assets/quill-pen.png";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleBoard } from "../../store/slices/projectSlice";
 import CreateProject from "./CreateProject";
+import { RootState } from "../../store/store";
+import { toggleProjectCreationBoard } from "../../store/slices/appSlice";
 
 
 const WritingBox = () => {
-  const projectBoard = useSelector((state) => state.project.projectBoard);
+  const {isProjectCreationBoardOpen} = useSelector((state: RootState) => state.app);
   const dispatch = useDispatch();
 
   const toggleModal = () => {
-    dispatch(toggleBoard());
-    console.log(projectBoard);
+    dispatch(toggleProjectCreationBoard());
+    console.log(isProjectCreationBoardOpen);
   };
 
   return (
     <div
       className={`w-full ${
-        projectBoard ? "h-full" : "h-auto"
+        isProjectCreationBoardOpen ? "h-full" : "h-auto"
       } rounded-lg relative`}
     >
-      {projectBoard && (
+      {isProjectCreationBoardOpen && (
         <div
           className="fixed inset-0 left-[260px] bg-transparent z-40"
           onClick={toggleModal}
@@ -29,7 +31,7 @@ const WritingBox = () => {
 
       <button
         className="relative w-full h-[150px] rounded-lg overflow-hidden cursor-pointer"
-        onClick={() => dispatch(toggleBoard())}
+        onClick={() => dispatch(toggleProjectCreationBoard())}
       >
         <img src={bgWriting} alt="" className="w-full h-[150px] rounded-lg" />
 
@@ -38,7 +40,7 @@ const WritingBox = () => {
         </div>
       </button>
 
-      <CreateProject className={`${projectBoard ? "block" : "hidden"}`} />
+      <CreateProject className={`${isProjectCreationBoardOpen ? "block" : "hidden"}`} />
     </div>
   );
 };

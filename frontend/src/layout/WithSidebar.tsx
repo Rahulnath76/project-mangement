@@ -1,17 +1,23 @@
-import React, { useState } from 'react'
-import Sidebar from '../components/common/Sidebar'
+import React from "react";
+import { useSelector } from "react-redux";
+import Sidebar from "../components/common/Sidebar";
+import { RootState } from "../store/store";
 
-const WithSidebar = ({children}: { children: React.ReactNode}) => {
-  const [collapse, setCollapse] = useState<boolean>(false);
+const WithSidebar = ({ children }: { children: React.ReactNode }) => {
+  const { isSidebarOpen } = useSelector((state: RootState) => state.app);
   return (
     <>
-       <Sidebar collapse={collapse} setCollapse={setCollapse}/>
+      <Sidebar isSidebarOpen={isSidebarOpen} />
 
-       <main className={`absolute top-0 ${!collapse ? "left-[270px]" : "left-0"} right-0 bottom-0 m-2 transition-all duration-200 z-10`}>
+      <main
+        className={`absolute top-0 ${
+          isSidebarOpen ? "left-[270px]" : "left-0"
+        } right-0 bottom-0 m-2 transition-all duration-200 z-10`}
+      >
         {children}
-       </main>
+      </main>
     </>
-  )
-}
+  );
+};
 
-export default WithSidebar
+export default WithSidebar;

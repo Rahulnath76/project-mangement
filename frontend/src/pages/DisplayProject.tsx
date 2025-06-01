@@ -1,47 +1,38 @@
+import dayjs from "dayjs";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Button from "../components/common/Button";
 import TaskList from "../components/project/TaskList";
+import { tasksTypesList } from "../data/data";
 import { getProjectDetails } from "../lib/services/operations/project.api";
-import {
-  deleteTaskThunk,
-  getAllTasks,
-} from "../lib/services/operations/task.api";
-import { Project } from "../lib/types/index";
+import { Task } from "../lib/types/index";
 import { AppDispatch, RootState } from "../store/store";
-import dayjs from "dayjs";
 
 const DisplayProject = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams();
-  const [projectDetails, setProjectDetails] = useState<Project | null>(null);
-  const [stateChange, setStateChange] = useState(false);
+  const { currentProject } = useSelector((state: RootState) => state.project);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [selected, setSelected] = useState("all");
 
-  const fetchProjectDetails = async () => {
+  const fetchProjectDetails = () => {
     if (!id) return;
     setLoading(true);
-    const details = await getProjectDetails(id);
-    setProjectDetails(details);
-    dispatch(getAllTasks(id));
+    dispatch(getProjectDetails(id));
     setLoading(false);
   };
 
   useEffect(() => {
     fetchProjectDetails();
-  }, [id, stateChange]);
+  }, [id]);
 
   const { tasks } = useSelector((state: RootState) => state.task);
+  console.log(tasks);
 
-  const handleDeleteTask = (taskId: string) => {
-    dispatch(deleteTaskThunk(id, taskId));
-    setStateChange(!stateChange);
-  };
-
-  if (loading || !projectDetails) {
+  if (loading || !currentProject) {
     return (
       <div className="p-6 min-h-screen bg-gray-100 flex items-center justify-center text-lg font-semibold text-gray-600">
         Loading project details...
@@ -49,9 +40,9 @@ const DisplayProject = () => {
     );
   }
 
-  const { name, createdAt, description } = projectDetails;
+  const { name, createdAt, description } = currentProject;
 
-  const groupedTasks = {
+  const groupedTasks: Record<string, Task[]> = {
     completed: tasks.filter((task) => task.status === "completed"),
     inprogress: tasks.filter((task) => task.status === "inprogress"),
     pending: tasks.filter((task) => task.status === "pending"),
@@ -62,6 +53,9 @@ const DisplayProject = () => {
     totalTasks > 0
       ? Math.round((groupedTasks.completed.length / totalTasks) * 100)
       : 0;
+
+  let filteredTasks: Task[] =
+    selected === "all" ? tasks : groupedTasks[selected];
 
   return (
     <div className="min-h-screen">
@@ -101,26 +95,16 @@ const DisplayProject = () => {
 
         <div className="flex justify-between gap-8 items-center">
           <div className="flex gap-4 flex-wrap justify-between w-full lg:w-[50%]">
-            <div>
-              <h4 className="text-[#DDA853] font-bold text-xl">Completed</h4>
-              <p className="text-2xl font-bold text-[#DDEB9D]">
-                {groupedTasks.completed.length}
-              </p>
-            </div>
+            {tasksTypesList.map(({ name }) => (
+              <div key={name}>
+                <h4 className="text-[#DDA853] font-bold text-xl">{name}</h4>
+                <p className="text-2xl font-bold text-[#DDEB9D]">
+                  {name.toLowerCase() === "all"
+                    ? tasks.length : groupedTasks[name.toLowerCase()].length}
+                </p>
+              </div>
+            ))}
 
-            <div>
-              <h4 className="text-[#DDA853] font-bold text-xl">In-progress</h4>
-              <p className="text-2xl font-bold text-[#DDEB9D]">
-                {groupedTasks.inprogress.length}
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-[#DDA853] font-bold text-xl">Pending</h4>
-              <p className="text-2xl font-bold text-[#DDEB9D]">
-                {groupedTasks.pending.length}
-              </p>
-            </div>
           </div>
 
           <div className="mb-6">
@@ -143,14 +127,42 @@ const DisplayProject = () => {
           </div>
         </div>
       </div>
-
-      <TaskList
-        tasks={tasks}
-        handleDeleteTask={handleDeleteTask}
-        projectId={id ?? ""}
-        creating={creating}
-        setCreating={setCreating}
-      />
+      <div>
+        <div className="flex gap-2 shadow-[0_0_12px_rgba(0,0,0,0.2)] px-2 pt-1 mb-4 rounded">
+          {tasksTypesList.map(({ name }) => (
+            <button
+              className={`${
+                selected === name.toLowerCase() &&
+                "shadow-[inset_0px_-4px_0px_#537D5C]"
+              } px-3 flex items-center py-1 gap-2 cursor-pointer transition-all duration-200`}
+              onClick={() => {
+                setSelected(name.toLowerCase());
+                filteredTasks =
+                  selected === "all" ? tasks : groupedTasks[name.toLowerCase()];
+              }}
+            >
+              <span className={`${selected === name.toLowerCase() && "font-semibold"}`}>{name}</span>
+              <div
+                className={`${
+                  selected === name.toLowerCase()
+                    ? "bg-tertiary/80 text-white"
+                    : "bg-gray-200"
+                } px-2 rounded text-xs flex items-center font-semibold`}
+              >
+                {name.toLowerCase() === "all"
+                  ? tasks.length
+                  : groupedTasks[name.toLowerCase()].length}
+              </div>
+            </button>
+          ))}
+        </div>
+        <TaskList
+          tasks={filteredTasks}
+          projectId={id ?? ""}
+          creating={creating}
+          setCreating={setCreating}
+        />
+      </div>
     </div>
   );
 };

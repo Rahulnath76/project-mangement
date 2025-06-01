@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Task } from "../../lib/types/index";
 
 export interface TaskState {
@@ -17,33 +17,41 @@ const taskSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
-    setTasks: (state, action: PayloadAction<Task[]>) => {
+    setTasks: (state, action) => {
       state.tasks = action.payload;
     },
-    addTask: (state, action: PayloadAction<Task>) => {
-      state.tasks.push(action.payload);
+    addTask: (state, action) => {
+      state.tasks.unshift(action.payload);
     },
-    editTask: (
-      state,
-      action: PayloadAction<{ id: string; changes: Partial<Task> }>
-    ) => {
-      const index = state.tasks.findIndex((task) => task._id === action.payload.id);
+    editTask: (state, action) => {
+      const index = state.tasks.findIndex(
+        (task) => task._id === action.payload.id
+      );
       if (index !== -1) {
-        state.tasks[index] = { ...state.tasks[index], ...action.payload.changes };
+        state.tasks[index] = {
+          ...state.tasks[index],
+          ...action.payload.changes,
+        };
       }
     },
-    deleteTask: (state, action: PayloadAction<string>) => {
-      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+    deleteTask: (state, action) => {
+      state.tasks = state.tasks.filter((task) => task._id !== action.payload);
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setLoading: (state, action) => {
       state.loading = action.payload;
     },
-    setSuccess: (state, action: PayloadAction<boolean>) => {
+    setSuccess: (state, action) => {
       state.success = action.payload;
-    }
+    },
   },
 });
 
-export const { setTasks, addTask, editTask, deleteTask, setLoading, setSuccess } =
-  taskSlice.actions;
+export const {
+  setTasks,
+  addTask,
+  editTask,
+  deleteTask,
+  setLoading,
+  setSuccess,
+} = taskSlice.actions;
 export default taskSlice.reducer;

@@ -13,7 +13,7 @@ export interface Project {
   user: string;
   description: string;
   status: "completed" | "not completed";
-  tasks: string[];
+  tasks: Task[] | string[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -38,5 +38,16 @@ export interface AuthResponse {
 export interface ProjectResponse {
   success: boolean;
   message: string;
+  project?: Project;
+  projects?: Project[];
+  tasks?: Task[];
+  error?: string;
+}
+
+export interface TaskResponse {
+  success: boolean;
+  message: string;
+  task?: Task;
+  tasks?: Task[];
   error?: string;
 }

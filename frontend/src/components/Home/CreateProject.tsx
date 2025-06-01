@@ -1,14 +1,14 @@
+import { X } from "lucide-react";
 import { useState } from "react";
-import Button from "../common/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { postProject } from "../../lib/services/operations/project.api";
-import type { AppDispatch } from "../../store/store";
-import { X } from "lucide-react";
-import { toggleBoard } from "../../store/slices/projectSlice";
+import { toggleProjectCreationBoard } from "../../store/slices/appSlice";
+import type { AppDispatch, RootState } from "../../store/store";
+import Button from "../common/Button";
 
 const CreateProject = ({ className }: { className: string }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector((state) => state.project);
+  const { loading } = useSelector((state: RootState) => state.project);
 
   const [data, setData] = useState({
     name: "",
@@ -29,7 +29,7 @@ const CreateProject = ({ className }: { className: string }) => {
   const handleSubmit = () => {
     console.log(data);
     dispatch(postProject(data));
-    dispatch(toggleBoard());
+    dispatch(toggleProjectCreationBoard());
     setData({
       name: "",
       description: "",
@@ -37,7 +37,7 @@ const CreateProject = ({ className }: { className: string }) => {
   };
 
   const handleCancel = () => {
-    dispatch(toggleBoard());
+    dispatch(toggleProjectCreationBoard());
     setData({
       name: "",
       description: "",

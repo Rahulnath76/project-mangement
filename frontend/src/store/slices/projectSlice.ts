@@ -4,7 +4,6 @@ import { Project } from "../../lib/types";
 export interface TaskState {
   projectData: Project[];
   currentProject: Project | null;
-  projectBoard: boolean;
   success: boolean;
   error?: string;
   loading: boolean;
@@ -13,7 +12,6 @@ export interface TaskState {
 const initialState: TaskState = {
   projectData: [],
   currentProject: null,
-  projectBoard: false,
   success: false,
   error: "",
   loading: false,
@@ -32,11 +30,11 @@ const taskSlice = createSlice({
     setCurrentProject: (state, action) => {
       state.currentProject = action.payload;
     },
+    addProject: (state, action) => {
+      state.projectData.unshift(action.payload);
+    },
     updateProjectsInfo: (state, action) => {
       state.projectData = state.projectData.filter((project) => project._id !== action.payload);
-    },
-    toggleBoard: (state) => {
-        state.projectBoard = !state.projectBoard;
     },
     setError: (state, action) => {
       state.error = action.payload;
@@ -50,6 +48,6 @@ const taskSlice = createSlice({
   },
 });
 
-export const { setProjectData, setCurrentProject, updateProjectsInfo, toggleBoard, setLoading, setSuccess, setError } =
+export const { setProjectData, addProject, setCurrentProject, updateProjectsInfo, setLoading, setSuccess, setError } =
   taskSlice.actions;
 export default taskSlice.reducer;

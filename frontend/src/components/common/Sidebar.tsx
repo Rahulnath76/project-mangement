@@ -1,29 +1,28 @@
 import { GripHorizontal, Home, TagsIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { toggleBoard } from "../../store/slices/projectSlice";
-import { RootState } from "../../store/store";
+import { toggleProjectCreationBoard, toggleSidebar } from "../../store/slices/appSlice";
+import { AppDispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
 import ListElement from "./ListElement";
 
 interface Props{
-  collapse: boolean;
-  setCollapse: (b: boolean) => void;
+  isSidebarOpen: boolean;
 }
 
-const Sidebar = ({collapse, setCollapse}: Props) => {
-  const dispatch = useDispatch();
+const Sidebar = ({isSidebarOpen}: Props) => {
+  const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.profile);
   const { projectData } = useSelector((state: RootState) => state.project);
 
   const { id } = useParams();
 
   const handleCollapse = () => {
-    setCollapse(!collapse);
+    dispatch(toggleSidebar())
   }
 
   return (
-    collapse ? 
+    !isSidebarOpen ? 
     ( <button
           onClick={handleCollapse}
           className="cursor-pointer bg-[#7F8CAA] p-2 rounded-xl z-20 fixed top-6 left-5"
@@ -33,7 +32,7 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
     (
       <div
       className={`fixed top-0 left-0 bottom-0 ${
-        collapse ? "hidden" : "w-[250px]"
+        !isSidebarOpen ? "hidden" : "w-[250px]"
       } bg-primary flex flex-col m-2 rounded-lg`}
     >
       {/* Header */}
@@ -54,8 +53,8 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
       <div className={`flex-1 flex flex-col justify-between overflow-hidden`}>
         <div className={` py-2 px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar h-full`}>
           <ul className="flex flex-col">
-            <ListElement title="Home" to="/" collapse={collapse} symbol={<Home width={20} height={20}/>}/>
-            <ListElement title="Tasks" to="/" collapse={collapse} symbol={<TagsIcon />}/>
+            <ListElement title="Home" to="/"  symbol={<Home width={20} height={20}/>}/>
+            <ListElement title="Tasks" to="/" symbol={<TagsIcon />}/>
           </ul>
 
           <div className="flex-1 flex flex-col">
@@ -66,11 +65,11 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
                 Menu
               </h3>
               <ul className="flex-1 flex flex-col gap-1">
-                <ListElement title="Overview" to="/" collapse={collapse} />
-                <ListElement title="Dashboard" to="/" collapse={collapse} />
-                <ListElement title="Chart" to="/" collapse={collapse} />
-                <ListElement title="Calender" to="/" collapse={collapse} />
-                <ListElement title="Settings" to="/" collapse={collapse} />
+                <ListElement title="Overview" to="/" />
+                <ListElement title="Dashboard" to="/" />
+                <ListElement title="Chart" to="/" />
+                <ListElement title="Calender" to="/" />
+                <ListElement title="Settings" to="/" />
               </ul>
             </div>
 
@@ -88,7 +87,7 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
                       key={project._id}
                       title={project.name}
                       to={`/projects/${project._id}`}
-                      collapse={collapse}
+                    
                       opened={id === project._id}
                     />
                   ))
@@ -99,7 +98,7 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
                   children={
                     <span>Create New Project</span>
                   }
-                  onclick={() => dispatch(toggleBoard())}
+                  onclick={() => dispatch(toggleProjectCreationBoard())}
                 />
               </div>
             </div>
@@ -117,9 +116,7 @@ const Sidebar = ({collapse, setCollapse}: Props) => {
               className="rounded-full bg-green-500"
             />
             <div
-              className={`${
-                collapse ? "hidden" : "flex"
-              } flex-col items-start justify-center`}
+              className={`flex flex-col items-start justify-center`}
             >
               <span className="font-semibold text-gray-300">
                 {user?.name || "Rahul Nath"}

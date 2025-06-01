@@ -110,7 +110,7 @@ export const getProjectById = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.id).populate("tasks");
     if (!project) {
       return res.status(404).json({
         success: false,
