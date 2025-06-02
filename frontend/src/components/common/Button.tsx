@@ -4,16 +4,18 @@ interface ButtonProps {
   bgShadow?: string;
   textColor?: string;
   px?: string;
+  py?: string;
+  classname?: string;
   onclick?: () => void;
 }
 
-const Button = ({ children, bg, bgShadow, textColor, px, onclick }: ButtonProps) => {
+const Button = ({ children, bg, bgShadow, textColor, px, classname, py, onclick }: ButtonProps) => {
   return (
     <div className="relative group">
       <div
-        className={`h-full top-1.5 -z-10 left-1.5 p-2 ${
+        className={`${classname} h-full top-1.5 -z-10 left-1.5 p-2 ${
           px || "px-6"
-        } w-full absolute ${
+        } w-full absolute ${py || ""} ${
           bgShadow || "bg-secondary"
         } rounded-lg group-hover:invisible transition-all duration-200`}
       ></div>

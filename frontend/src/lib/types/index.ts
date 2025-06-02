@@ -14,7 +14,7 @@ export interface Project {
   description: string;
   status: "completed" | "not completed";
   tasks: Task[] | string[];
-  type: string;
+  category: string;
   createdAt: string;
   updatedAt: string;
   __v: number;

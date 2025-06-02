@@ -13,9 +13,10 @@ const CreateProject = ({ className }: { className: string }) => {
   const [data, setData] = useState({
     name: "",
     description: "",
-    type: "",
+    category: "",
   });
-  const { name, description, type } = data;
+
+  const { name, description, category } = data;
 
   const handleOnChange: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
@@ -28,13 +29,13 @@ const CreateProject = ({ className }: { className: string }) => {
   };
 
   const handleSubmit = () => {
-    console.log(data);
+    if (!name || !description || !category) return;
     dispatch(postProject(data));
     dispatch(toggleProjectCreationBoard());
     setData({
       name: "",
       description: "",
-      type: "",
+      category: "",
     });
   };
 
@@ -43,73 +44,86 @@ const CreateProject = ({ className }: { className: string }) => {
     setData({
       name: "",
       description: "",
-      type: "",
+      category: "",
     });
   };
 
   return (
     <div
-      className={`${className} absolute inset-0 bg-primary z-50 rounded-lg shadow-lg top-0 overflow-hidden p-4 lg:px-6 text-white h-full overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar`}
+      className={`${className} fixed inset-0 flex items-center justify-center bg-black/50 z-50 backdrop-blur-sm`}
     >
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-gray-200 font-semibold">Create a new project</p>
-        <button onClick={handleCancel} className="cursor-pointer mb-2">
-          <X className="mx-auto" />
+      <div className="bg-[#1E2B3A] text-white w-full max-w-xl sm:max-w-lg mx-4 rounded-2xl shadow-lg p-6 sm:p-8 space-y-6 relative overflow-y-auto max-h-[95vh]">
+        <button
+          onClick={handleCancel}
+          className="absolute top-4 right-4 text-gray-300 cursor-pointer hover:text-white"
+        >
+          <X className="w-6 h-6" />
         </button>
-      </div>
-      <div className="flex flex-col gap-4">
-        <div>
-          <p className="pb-1 text-sm text-gray-300 ">Project Type</p>
-          <input
-            type="text"
-            placeholder="Project type"
-            className="w-full placeholder-gray-300/85 bg-[#183B4E] p-2 rounded focus:outline-none"
-            name="type"
-            value={type}
-            onChange={handleOnChange}
-          />
+
+        <div className="text-center space-y-1">
+          <h2 className="text-xl sm:text-2xl font-bold">
+            Start Something New 🚀
+          </h2>
+          <p className="text-sm text-gray-400">
+            Begin by giving your project a name and description.
+          </p>
         </div>
 
-        <div>
-          <p className="pb-1 text-sm text-gray-300 ">Project name</p>
-          <input
-            type="text"
-            placeholder="Project name"
-            className="w-full placeholder-gray-300/85 bg-[#183B4E] p-2 rounded focus:outline-none"
-            name="name"
-            value={name}
-            onChange={handleOnChange}
-          />
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm mb-1 text-gray-300">
+              Project Category
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Web App, AI Tool, Fintech"
+              className="w-full rounded-lg bg-[#2A3F53] px-4 py-2 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
+              name="category"
+              value={category}
+              onChange={handleOnChange}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm mb-1 text-gray-300">
+              Project Name
+            </label>
+            <input
+              type="text"
+              placeholder="Give your project a title"
+              className="w-full rounded-lg bg-[#2A3F53] px-4 py-2 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
+              name="name"
+              value={name}
+              onChange={handleOnChange}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm mb-1 text-gray-300">
+              Description
+            </label>
+            <textarea
+              placeholder="Describe the goals, features, and scope..."
+              className="w-full h-32 rounded-lg bg-[#2A3F53] px-4 py-2 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-secondary resize-none scrollbar-thin text-sm"
+              name="description"
+              value={description}
+              onChange={handleOnChange}
+            />
+          </div>
         </div>
 
-        <div>
-          <p className="pb-1 text-sm text-gray-300 ">Project description</p>
-          <textarea
-            placeholder="Project description"
-            className="w-full h-[220px] p-2 placeholder-gray-300/85 bg-[#183B4E] rounded focus:outline-none scrollbar scrollbar-thin scrollbar-thumb-rounded"
-            name="description"
-            value={description}
-            onChange={handleOnChange}
-          />
-        </div>
-      </div>
-
-      <div className="flex justify-between my-4">
-        <div>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
           <Button
-            children={<span>{loading ? "Creating..." : "Create Project"}</span>}
-            px="px-8"
-            onclick={handleSubmit}
-          />
-        </div>
-        <div>
-          <Button
-            children={<span>Cancel</span>}
-            bg={"bg-[#C9B194]"}
-            bgShadow="bg-tertiary"
-            textColor="text-[#252A34]"
+            bg="bg-gray-600"
+            bgShadow="bg-gray-700"
+            textColor="text-white"
             onclick={handleCancel}
-          />
+          >
+            <span>Cancel</span>
+          </Button>
+          <Button px="px-6" onclick={handleSubmit}>
+            <span>{loading ? "Creating..." : "Create Project"}</span>
+          </Button>
         </div>
       </div>
     </div>
@@ -117,5 +131,3 @@ const CreateProject = ({ className }: { className: string }) => {
 };
 
 export default CreateProject;
-
-// bg-[#FFF8F8]

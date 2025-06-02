@@ -48,11 +48,6 @@ const DisplayProject = () => {
     pending: tasks.filter((task) => task.status === "pending"),
   };
 
-  const totalTasks = tasks.length;
-  const completedPercent =
-    totalTasks > 0
-      ? Math.round((groupedTasks.completed.length / totalTasks) * 100)
-      : 0;
 
   let filteredTasks: Task[] =
     selected === "all" ? tasks : groupedTasks[selected];
@@ -60,7 +55,7 @@ const DisplayProject = () => {
   return (
     <div className="min-h-screen">
       <div className="bg-tertiary p-6 pb-4 rounded-lg shadow-lg mb-6">
-        <div className="flex justify-between items-center ">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="w-full">
             <div className="flex justify-between">
               <div>
@@ -74,63 +69,31 @@ const DisplayProject = () => {
 
               <div>
                 <Button
-                  onclick={() => {
-                    setCreating(true);
-                    console.log(creating);
-                  }}
+                  onclick={() => setCreating(true)}
                   bg="bg-primary"
                   textColor="text-[#DDF6D2]"
                   bgShadow="bg-[#B2C6D5]"
-                  px="px-4"
+                  px="px-5"
+                  py="py-2"
+                  classname="w-full sm:w-auto"
                 >
-                  <Plus /> <span className="hidden sm:inline">New Task</span>
+                  <Plus />
+                  <span className="hidden sm:inline">New Task</span>
                 </Button>
               </div>
             </div>
-            <p className="text-[#CAE8BD] italic">
+            <p className="text-[#CAE8BD] italic line-clamp-2 sm:line-clamp-none">
               {description.length < 30 ? description : description}
             </p>
           </div>
         </div>
 
-        <div className="flex justify-between gap-8 items-center">
-          <div className="flex gap-4 flex-wrap justify-between w-full lg:w-[50%]">
-            {tasksTypesList.map(({ name }) => (
-              <div key={name}>
-                <h4 className="text-[#DDA853] font-bold text-xl">{name}</h4>
-                <p className="text-2xl font-bold text-[#DDEB9D]">
-                  {name.toLowerCase() === "all"
-                    ? tasks.length : groupedTasks[name.toLowerCase()].length}
-                </p>
-              </div>
-            ))}
-
-          </div>
-
-          <div className="mb-6">
-            <div className="bg-[#90D1CA] rounded-full h-28 w-28 relative">
-              <div className="bg-tertiary h-20 w-20 absolute rounded-full top-4 left-4"></div>
-              <p
-                className={`font-semibold text-2xl absolute z-10 cursor-default w-full h-full flex flex-col items-center justify-center text-[#DDEB9D]`}
-              >
-                <span>{completedPercent}%</span>
-              </p>
-              <div
-                className="h-28 w-28 bg-secondary rounded-full"
-                style={{
-                  background: `conic-gradient(#096B68 ${
-                    completedPercent * 3.6
-                  }deg, #d1d5db ${completedPercent * 3.6}deg)`,
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
       </div>
       <div>
-        <div className="flex gap-2 shadow-[0_0_12px_rgba(0,0,0,0.2)] px-2 pt-1 mb-4 rounded">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar shadow-[0_0_12px_rgba(0,0,0,0.2)] px-2 pt-1 mb-4 rounded">
           {tasksTypesList.map(({ name }) => (
             <button
+              key={name}
               className={`${
                 selected === name.toLowerCase() &&
                 "shadow-[inset_0px_-4px_0px_#537D5C]"
@@ -141,7 +104,13 @@ const DisplayProject = () => {
                   selected === "all" ? tasks : groupedTasks[name.toLowerCase()];
               }}
             >
-              <span className={`${selected === name.toLowerCase() && "font-semibold"}`}>{name}</span>
+              <span
+                className={`${
+                  selected === name.toLowerCase() && "font-semibold"
+                }`}
+              >
+                {name}
+              </span>
               <div
                 className={`${
                   selected === name.toLowerCase()

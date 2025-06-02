@@ -23,7 +23,7 @@ const ProjectList = ({ item }: { item: Project }) => {
       <div className="flex justify-between items-center mb-4 relative">
         {/* tag */}
         <Link to={`/`} className="bg-secondary/40 px-4 rounded-xl">
-          <span className="font-bold text-secondary text-sm">{item.type.slice(0, 15)}</span>
+          <span className="font-bold text-secondary text-sm">{item.category.slice(0, 15)}</span>
         </Link>
         <button
           className="cursor-pointer hover:bg-gray-200 p-1 rounded-full"

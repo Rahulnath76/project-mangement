@@ -32,7 +32,7 @@ const projectSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
     },
-    type: {
+    category: {
       type: String,
       required: true,
     },

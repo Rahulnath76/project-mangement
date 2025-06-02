@@ -1,35 +1,35 @@
 import Project from "../models/project.model.js";
-import Type from "../models/type.model.js";
+import Category from "../models/category.model.js";
 import User from "../models/user.model.js";
 
 export const createProject = async (req, res) => {
   try {
-    const { name, description, type } = req.body;
+    const { name, description, category } = req.body;
 
-    if (!name || !description || !type) {
+    if (!name || !description || !category) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
-    // Check if the type exists
-    let projectType = await Type.findOne({ name: type.toLowerCase() });
-    if (!projectType){
-      projectType = new Type({
-        name: type.toLowerCase(),
+    // Check if the Category exists
+    let projectCategory = await Category.findOne({ name: category.toLowerCase() });
+    if (!projectCategory){
+      projectCategory = new Category({
+        name: category.toLowerCase(),
       })
-      await projectType.save();
+      await projectCategory.save();
     }
     const newProject = new Project({
       user: req.user.userId,
       name,
       description,
-      type
+      category
     });
 
     const savedProject = await newProject.save();
-    projectType.projects.push(savedProject._id);
-    await projectType.save();
+    projectCategory.projects.push(savedProject._id);
+    await projectCategory.save();
 
     await User.findByIdAndUpdate(
       req.user.userId,

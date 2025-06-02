@@ -11,7 +11,7 @@ const WithSidebar = ({ children }: { children: React.ReactNode }) => {
 
       <main
         className={`absolute top-0 ${
-          isSidebarOpen ? "left-[270px]" : "left-0"
+          isSidebarOpen ? "sm:left-[270px]" : "left-0"
         } right-0 bottom-0 m-2 transition-all duration-200 z-10`}
       >
         {children}

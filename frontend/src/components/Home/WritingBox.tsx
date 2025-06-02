@@ -1,10 +1,9 @@
+import { useDispatch, useSelector } from "react-redux";
 import bgWriting from "../../assets/bg-writing.jpg";
 import pen from "../../assets/quill-pen.png";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleBoard } from "../../store/slices/projectSlice";
-import CreateProject from "./CreateProject";
-import { RootState } from "../../store/store";
 import { toggleProjectCreationBoard } from "../../store/slices/appSlice";
+import { RootState } from "../../store/store";
+import CreateProject from "./CreateProject";
 
 
 const WritingBox = () => {
@@ -13,18 +12,15 @@ const WritingBox = () => {
 
   const toggleModal = () => {
     dispatch(toggleProjectCreationBoard());
-    console.log(isProjectCreationBoardOpen);
   };
 
   return (
     <div
-      className={`w-full ${
-        isProjectCreationBoardOpen ? "h-full" : "h-auto"
-      } rounded-lg relative`}
+      className={`w-full rounded-lg`}
     >
       {isProjectCreationBoardOpen && (
         <div
-          className="fixed inset-0 left-[260px] bg-transparent z-40"
+          className="fixed inset-0 bg-transparent z-40"
           onClick={toggleModal}
         ></div>
       )}
