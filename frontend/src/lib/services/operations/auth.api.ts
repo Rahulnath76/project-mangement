@@ -39,7 +39,7 @@ export const signup = (
       dispatch(setSuccess(true));
       toast.success("Signup successful!");
       navigate("/signin");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       dispatch(setSuccess(false));
       toast.error(
@@ -105,3 +105,10 @@ export const logout = (navigate: NavigateFunction) => {
     }
   };
 };
+
+
+export const editUserInfo = (data) => {
+  return async (dispatch) => {
+    
+  }
+}

@@ -5,7 +5,7 @@ import WithSidebar from "./layout/WithSidebar";
 import { fetchUserProjects } from "./lib/services/operations/project.api";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Logout from "./pages/Logout";
+import Logout from "./pages/AccountInfo";
 import Signup from "./pages/Signup";
 import SignupTest from "./pages/SignupTest";
 import { AppDispatch, RootState } from "./store/store";
@@ -29,9 +29,13 @@ const App = () => {
         <Route
           path="/"
           element={
-            isLoggedIn ? (<WithSidebar>
-              <Home />
-            </WithSidebar>) : <Navigate to={"/signin"} />
+            isLoggedIn ? (
+              <WithSidebar>
+                <Home />
+              </WithSidebar>
+            ) : (
+              <Navigate to={"/signin"} />
+            )
           }
         />
         <Route path="/signup-test" element={<SignupTest />} />
@@ -44,14 +48,26 @@ const App = () => {
           element={!isLoggedIn ? <Login /> : <Navigate to={"/"} />}
         />
         <Route
-          path="/logout"
-          element={isLoggedIn ? <Logout /> : <Navigate to={"/signin"} />}
+          path="/account"
+          element={
+            isLoggedIn ? (
+              <WithSidebar>
+                <Logout />
+              </WithSidebar>
+            ) : (
+              <Navigate to={"/signin"} />
+            )
+          }
         />
 
-        <Route path="/projects/:id" element={
-          <WithSidebar>
-            <DisplayProject />  
-        </WithSidebar>} />
+        <Route
+          path="/projects/:id"
+          element={
+            <WithSidebar>
+              <DisplayProject />
+            </WithSidebar>
+          }
+        />
       </Routes>
 
       <Toaster />

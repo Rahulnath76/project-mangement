@@ -19,6 +19,15 @@ const userSchema = new mongoose.Schema(
             required: true,
             minlength: 6,
         },
+        bio: {
+            type: String,
+            default: "",
+            trim: true,
+        },
+        avatar: {
+            type: String,
+            default: "",
+        },
         projects: [
             {
                 type: mongoose.Schema.Types.ObjectId,

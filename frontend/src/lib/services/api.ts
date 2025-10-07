@@ -4,6 +4,11 @@ export const auth = {
   LOGOUT_API: "/auth/logout",
 };
 
+export const profile = {
+  UPDATE_PROFILE_API: "/profile/update",
+};
+
+
 export const project = {
   CREATE_PROJECT: "/project/new-project",
   UPDATE_PROJECT: "/project/update-project",

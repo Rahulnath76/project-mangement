@@ -122,7 +122,7 @@ const Sidebar = ({ isSidebarOpen }: Props) => {
 
           {/* Footer Profile Section - Stick to Bottom */}
           <div className="border-t-2 border-gray-800 p-3">
-            <Link to={"/logout"} className="flex items-center gap-2 w-full">
+            <Link to={"/account"} className="flex items-center gap-2 w-full">
               <img
                 src={user.profilePic}
                 alt="profile"
